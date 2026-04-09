@@ -1,0 +1,47 @@
+.container-principal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60%;
+  width: 50%;
+  margin: 0;
+  background-color: blue;
+  position: absolute;
+  top: 20%;
+}
+
+/* .botao{
+
+    display: flex;
+    position: absolute;
+    left: 5%;
+    height: 60px;
+    width: 60px;
+} */
+.botao1 {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  left: 10px;
+  top: 100px;
+  height: 60px;
+  width: 120px;
+}
+.botao2 {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  left: 10px;
+  height: 60px;
+  width: 120px;
+}
+
+.botao3 {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  left: 10px;
+  margin-top: 80px;
+  height: 60px;
+  width: 120px;
+}
