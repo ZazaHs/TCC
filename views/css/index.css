@@ -1,3 +1,15 @@
+*{
+
+  padding: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+
 .container-principal {
   display: flex;
   justify-content: center;
@@ -5,20 +17,17 @@
   height: 60%;
   width: 50%;
   margin: 0;
-  background-color: blue;
+  
   position: absolute;
   top: 20%;
 }
+.img1{
 
-/* .botao{
-
-    display: flex;
-    position: absolute;
-    left: 5%;
-    height: 60px;
-    width: 60px;
-} */
-.botao1 {
+  height: 100%;
+  width: 100%;
+ 
+}
+.link1{
   display: flex;
   position: absolute;
   align-items: center;
@@ -26,17 +35,24 @@
   top: 100px;
   height: 60px;
   width: 120px;
+  color: white;
+  font-size: 30px;
+  text-decoration: none;
+ 
 }
-.botao2 {
+.link2{
   display: flex;
   position: absolute;
   align-items: center;
   left: 10px;
   height: 60px;
   width: 120px;
+  color: white;
+   font-size: 30px;
+   text-decoration: none;
 }
 
-.botao3 {
+.link3 {
   display: flex;
   position: absolute;
   align-items: center;
@@ -44,4 +60,9 @@
   margin-top: 80px;
   height: 60px;
   width: 120px;
+  color: white;
+   font-size: 30px;
+   text-decoration: none;
 }
+
+
