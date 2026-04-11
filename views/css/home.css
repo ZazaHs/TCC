@@ -1,0 +1,37 @@
+.cabeçalho{
+
+    background-color: rgb(27, 84, 145);
+    height: 100px;
+      display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body{
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+
+/* Estilo básico do menu */
+#menu-principal {
+    display: none; /* Esconde o menu por padrão */
+    background-color: #000000;
+    padding: 20px;
+}
+
+/* Classe que o JavaScript vai adicionar para mostrar o menu */
+#menu-principal.aberto {
+    display: block;
+}
+
+/* Deixa o ícone com cara de clicável */
+#btn-menu {
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+    background: none;
+     display: flex;
+  position: absolute;
+  left: 10px;
+
+}

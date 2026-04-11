@@ -64,5 +64,15 @@ body{
    font-size: 30px;
    text-decoration: none;
 }
+.titulo-principal{
+
+   display: flex;
+  position: absolute;
+  left: 10px;
+  top: 5px;
+ color: white;
+ font-size: 40px;
+
+}
 
 
