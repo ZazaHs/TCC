@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
+body{
+  background-color: black;
+  font-family: 'Pompiere', cursive;
+  text-align: center;
+  color: white;
+}
+header{
+  font-size: 50px;
+}
+input{
+  width: 20%;
+  padding: 6px 10px;
+  margin: 5px 0;
+   font-family: 'Pompiere', cursive;
+  display: inline-block;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition:  0.3;
+  outline: none;
+
+}
+button{
+  background-color: lightblue;
+   width: 20%;
+  padding: 6px 10px;
+  margin: 5px 0;
+  display: inline-block;
+  color: black;
+  border: 2px solid lightblue;
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition:  0.3;
+  outline: none;
+  font-family: 'Pompiere', cursive;
+
+}
+a{
+  color: white;
+}
