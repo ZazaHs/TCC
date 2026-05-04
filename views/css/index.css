@@ -1,78 +1,41 @@
-*{
-
-  padding: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
 body{
-  margin: 0;
-  padding: 0;
+  background-color: black;
+  font-family: 'Pompiere', cursive;
+  text-align: center;
+  color: white;
+}
+header{
+  font-size: 50px;
+}
+input{
+  width: 20%;
+  padding: 6px 10px;
+  margin: 5px 0;
+   font-family: 'Pompiere', cursive;
+  display: inline-block;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition:  0.3;
   outline: none;
-}
 
-.container-principal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60%;
-  width: 50%;
-  margin: 0;
-  
-  position: absolute;
-  top: 20%;
 }
-.img1{
+button{
+  background-color: lightblue;
+   width: 20%;
+  padding: 6px 10px;
+  margin: 5px 0;
+  display: inline-block;
+  color: black;
+  border: 2px solid lightblue;
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition:  0.3;
+  outline: none;
+  font-family: 'Pompiere', cursive;
 
-  height: 100%;
-  width: 100%;
- 
 }
-.link1{
-  display: flex;
-  position: absolute;
-  align-items: center;
-  left: 10px;
-  top: 100px;
-  height: 60px;
-  width: 120px;
+a{
   color: white;
-  font-size: 30px;
-  text-decoration: none;
- 
 }
-.link2{
-  display: flex;
-  position: absolute;
-  align-items: center;
-  left: 10px;
-  height: 60px;
-  width: 120px;
-  color: white;
-   font-size: 30px;
-   text-decoration: none;
-}
-
-.link3 {
-  display: flex;
-  position: absolute;
-  align-items: center;
-  left: 10px;
-  margin-top: 80px;
-  height: 60px;
-  width: 120px;
-  color: white;
-   font-size: 30px;
-   text-decoration: none;
-}
-.titulo-principal{
-
-   display: flex;
-  position: absolute;
-  left: 10px;
-  top: 5px;
- color: white;
- font-size: 40px;
-
-}
-
-
