@@ -5,29 +5,71 @@ body{
   font-family: 'Pompiere', cursive;
   color: white;
 }
-.conteiner{
-    width: 10%;
+
+.barra-lateral{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 7%;
     height: auto;
-    
-    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    gap: 40px;
+    z-index: 999;
 }
 .button1{
     background-image: url('/views/media/home.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    width: 5%;
-    height: auto;
-    padding: 25%;
-    border-radius: 8px;
-
-    border: none;
+    width: 75px;
+    height: 75px;
+    border-radius: 12px;
     cursor: pointer;
+    transition: background 0.3s;
 }
-.hotbar{
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-
+.button2{
+    background-image: url('/views/media/lupa.jpg');
+     width: 75px;
+    height: 75px;
+     border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.button3{
+    background-image: url('/views/media/chat.jpg');
+     width: 75px;
+    height: 75px;
+     border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.button4{
+    background-image: url('/views/media/perfil.jpg');
+     width: 75px;
+    height: 75px;
+     border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.button5{
+    background-image: url('/views/media/config.jpg');
+     width: 75px;
+    height: 75px;
+     border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.feed{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    margin-left: 90px;
+}
+.arte-card{
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #ddd;
+    border-radius: 8px;
 }
