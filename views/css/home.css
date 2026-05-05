@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
+
+body{
+  background-color: black;
+  font-family: 'Pompiere', cursive;
+  color: white;
+}
+.conteiner{
+    width: 10%;
+    height: auto;
+    
+    text-align: center;
+}
+.button1{
+    background-image: url('/views/media/home.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    width: 5%;
+    height: auto;
+    padding: 25%;
+    border-radius: 8px;
+
+    border: none;
+    cursor: pointer;
+}
+.hotbar{
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+
+}
