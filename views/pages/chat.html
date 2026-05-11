@@ -1,11 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Chat Minimalista - Dark Mode</title>
+    <link rel="stylesheet" href="/views/css/chat.css">
 </head>
 <body>
-    
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <span>Amnesia</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <button onclick="window.location.href='/views'" class="nav-btn active"><i class="fas fa-comment-alt"></i> <span>Chat</span></button>
+                <button onclick="window.location.href='/views/pages/home.html'" class="nav-btn"><i class="fas fa-users"></i> <span>Home</span></button>
+                <button onclick="window.location.href='/views/pages/cadastro.html'" class="nav-btn"><i class="fas fa-archive"></i> <span>Procurar</span></button>
+                <div class="nav-divider"></div>
+                <button class="nav-btn"><i class="fas fa-user-circle"></i> <span>Perfil</span></button>
+                <button class="nav-btn"><i class="fas fa-cog"></i> <span>Ajustes</span></button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            </div>
+        </aside>
+
+        <main class="chat-area">
+            <header class="chat-header">
+                <div class="header-info">
+                    <div class="status-dot"></div>
+                    <div class="contact-name">
+                        <h3>Projeto TCC</h3>
+                        <p>3 participantes online</p>
+                    </div>
+                </div>
+                <div class="header-options">
+                    <i class="fas fa-search"></i>
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </header>
+
+            <section class="chat-messages">
+                <div class="message received">
+                    <p>Olá! Este é o novo layout em modo escuro.</p>
+                    <span class="time">14:20</span>
+                </div>
+
+                <div class="message sent">
+                    <p>Ficou ótimo! Agora ele ocupa a tela inteira conforme o solicitado.</p>
+                    <span class="time">14:22</span>
+                </div>
+
+                <div class="message received">
+                    <p>O design minimalista ajuda a focar na conversa.</p>
+                    <span class="time">14:23</span>
+                </div>
+            </section>
+           </main>
+
+            <footer class="chat-input">
+                <div class="input-wrapper">
+                    <button class="attachment-btn"><i class="fas fa-plus"></i></button>
+                    <input type="text" placeholder="Escreva uma mensagem...">
+                    <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </footer>
+       
+    </div>
 </body>
 </html>

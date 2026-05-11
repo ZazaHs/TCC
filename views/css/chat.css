@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
+body{
+  background-color: black;
+  font-family: 'Pompiere', cursive;
+  text-align: center;
+  color: white;
+}
+
+
+/* Reset total para remover espaços em branco indesejados */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pompiere', cursive;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Impede scroll na página inteira */
+    background-color: #000000;
+}
+
+.app-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0a0a0a;
+}
+
+/* Sidebar - Cor Preta Sólida */
+.sidebar {
+    width: 280px;
+    background-color: #000000;
+    border-right: 1px solid #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 15px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 15px 40px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.logo-icon {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 8px;
+}
+
+.nav-menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    color: #888;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.95rem;
+    text-align: left;
+}
+
+.nav-btn i {
+    width: 20px;
+}
+
+.nav-btn:hover {
+    background-color: #111;
+    color: #fff;
+}
+
+.nav-btn.active {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.nav-divider {
+    height: 1px;
+    background-color: #1a1a1a;
+    margin: 15px 10px;
+}
+
+.logout-btn {
+    background: transparent;
+    border: 1px solid #333;
+    color: #ff4d4d;
+    padding: 10px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Área do Chat - Cinza quase preto */
+.chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #0a0a0a;
+}
+
+.chat-header {
+    height: 70px;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #1a1a1a;
+    background-color: #0a0a0a;
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #10b981;
+    border-radius: 50%;
+}
+
+.contact-name h3 {
+    color: #fff;
+    font-size: 1rem;
+}
+
+.contact-name p {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.header-options {
+    color: #666;
+    display: flex;
+    gap: 20px;
+    cursor: pointer;
+}
+
+/* Balões de Mensagem */
+.chat-messages {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.message {
+    max-width: 60%;
+    padding: 12px 18px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    position: relative;
+    line-height: 1.4;
+}
+
+.received {
+    align-self: flex-start;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border-bottom-left-radius: 2px;
+}
+
+.sent {
+    align-self: flex-end;
+    background-color: #2563eb; /* Azul destaque */
+    color: white;
+    border-bottom-right-radius: 2px;
+}
+
+.time {
+    display: block;
+    font-size: 0.7rem;
+    margin-top: 5px;
+    opacity: 0.5;
+    text-align: right;
+}
+
+/* Rodapé de Input */
+.chat-input {
+    padding: 20px 30px 30px;
+    background-color: #0a0a0a;
+}
+
+.input-wrapper {
+    background-color: #121212;
+    border: 1px solid #1a1a1a;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    padding: 5px 15px;
+}
+
+.input-wrapper input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 12px;
+    outline: none;
+}
+
+.attachment-btn, .send-btn {
+    background: transparent;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: 0.2s;
+}
+
+.send-btn {
+    color: #3b82f6;
+    padding-left: 10px;
+}
+
+.send-btn:hover {
+    color: #60a5fa;
+}
