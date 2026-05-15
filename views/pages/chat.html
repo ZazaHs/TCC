@@ -3,73 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Minimalista - Dark Mode</title>
+    <title>Artist Chat | Portfolio</title>
+    <link rel="stylesheet" href="/views/css/chat.css">
+    <!-- Importando a fonte Pompiere do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pompiere&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/views/css/chat.css">
 </head>
 <body>
 
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="logo">
-                <div class="logo-icon"></div>
-                <span>Amnesia</span>
+    <!-- Sidebar de Navegação Lateral -->
+    <nav class="sidebar">
+        <div class="brand">
+            <h1>Amnesia</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="home.html">Galeria</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+            <li><a href="#" class="active">Mensagens</a></li>
+            <li><a href="Ajustes.html">Ajustes</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="#">Sair</a>
+        </div>
+    </nav>
+
+    <!-- Área Principal do Chat -->
+    <main class="chat-container">
+        <header class="chat-header">
+            <div class="user-info">
+                <div class="avatar"></div>
+                <div>
+                    <h2>Gustavo</h2>
+                    <p>Ilustrador Freelancer</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="chat-window">
+            <div class="message received">
+                <div class="bubble">Olá, vi o seu portifólio e queria te pedir para realizar uma trabalho para mim</div>
+                <span class="timestamp">10:30</span>
             </div>
             
-            <nav class="nav-menu">
-                <button onclick="window.location.href='/views'" class="nav-btn active"><i class="fas fa-comment-alt"></i> <span>Chat</span></button>
-                <button onclick="window.location.href='/views/pages/home.html'" class="nav-btn"><i class="fas fa-users"></i> <span>Home</span></button>
-                <button onclick="window.location.href='/views/pages/cadastro.html'" class="nav-btn"><i class="fas fa-archive"></i> <span>Procurar</span></button>
-                <div class="nav-divider"></div>
-                <button class="nav-btn"><i class="fas fa-user-circle"></i> <span>Perfil</span></button>
-                <button class="nav-btn"><i class="fas fa-cog"></i> <span>Ajustes</span></button>
-            </nav>
-
-            <div class="sidebar-footer">
-                <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            <div class="message sent">
+                <div class="bubble">Claro, poderia me passar as informações sobre oq você quer que eu faça</div>
+                <span class="timestamp">10:32</span>
             </div>
-        </aside>
+            
+            <div class="message received">
+                <div class="bubble">Você faz arte publicitária?</div>
+                <span class="timestamp">10:33</span>
+            </div>
+            
+            <div class="message sent">
+                <div class="bubble">faço sim, que tipo de arte seria?</div>
+                <span class="timestamp">10:35</span>
+            </div>
+        </section>
 
-        <main class="chat-area">
-            <header class="chat-header">
-                <div class="header-info">
-                    <div class="status-dot"></div>
-                    <div class="contact-name">
-                        <h3>Projeto TCC</h3>
-                        <p>3 participantes online</p>
-                    </div>
-                </div>
-                <div class="header-options">
-                    <i class="fas fa-search"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                </div>
-            </header>
+        <footer class="input-area">
+            <button class="action-btn">+</button>
+            <input type="text" placeholder="Escreva sua mensagem artística...">
+            <button class="send-btn">Enviar</button>
+        </footer>
+    </main>
 
-            <section class="chat-messages">
-                <div class="message received">
-                    <p>Olá! Este é o novo layout em modo escuro.</p>
-                    <span class="time">14:20</span>
-                </div>
-
-                <div class="message sent">
-                    <p>Ficou ótimo! Agora ele ocupa a tela inteira conforme o solicitado.</p>
-                    <span class="time">14:22</span>
-                </div>
-
-                <div class="message received">
-                    <p>O design minimalista ajuda a focar na conversa.</p>
-                    <span class="time">14:23</span>
-                </div>
-            </section>
-           </main>
-
-            <footer class="chat-input">
-                <div class="input-wrapper">
-                    <button class="attachment-btn"><i class="fas fa-plus"></i></button>
-                    <input type="text" placeholder="Escreva uma mensagem...">
-                    <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </footer>
-       
-    </div>
 </body>
 </html>

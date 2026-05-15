@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações | ArtHub</title>
+    <!-- Importando a fonte Pompiere -->
+    <link href="https://fonts.googleapis.com/css2?family=Pompiere&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/views/css/ajustes.css">
+</head>
+<body>
+
+    <!-- Sidebar com Links Arrumados -->
+    <nav class="sidebar">
+        <div class="brand">
+            <h1>Amnesia</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="home.html">Galeria</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+            <li><a href="index.html">Mensagens</a></li> <!-- Link para a tela de chat -->
+            <li><a href="ajustes.html" class="active">Ajustes</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="#">Sair</a>
+        </div>
+    </nav>
+
+    <main class="chat-container">
+        <header class="chat-header">
+            <div class="user-info">
+                <div>
+                    <h2>Configurações Gerais</h2>
+                    <p>Gerencie sua conta e preferências de estilo</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="settings-content">
+            <!-- Edição de Perfil -->
+            <div class="settings-group">
+                <h3>Perfil Público</h3>
+                <div class="profile-edit-grid">
+                    <div class="input-box">
+                        <label>Nome de exibição</label>
+                        <input type="text" placeholder="Seu nome artístico...">
+                    </div>
+                    <div class="input-box">
+                        <label>Bio</label>
+                        <textarea placeholder="Fale sobre você..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preferências de Conta -->
+            <div class="settings-group">
+                <h3>Privacidade e Segurança</h3>
+                <div class="setting-item">
+                    <div class="text">
+                        <strong>Perfil Privado</strong>
+                        <p>Apenas seguidores podem ver suas obras.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="text">
+                        <strong>Histórico de Busca</strong>
+                        <p>Ativar recomendações personalizadas.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <footer class="input-area">
+            <button class="save-btn">Salvar Alterações</button>
+        </footer>
+    </main>
+
+</body>
+</html>
