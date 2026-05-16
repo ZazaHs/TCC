@@ -11,8 +11,8 @@ app.use(express.json());
 // Configuração da Conexão com o MySQL
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'root',      // Verifique se o seu usuário é 'root'
-    password: 'isac',      // Coloque a senha do seu MySQL aqui (se tiver)
+    user: 'root',
+    password: 'isac', 
     database: 'banco_amnesia'
 });
 
@@ -25,39 +25,42 @@ db.connect((err) => {
     console.log('Conectado ao banco_amnesia com sucesso!');
 });
 
+// ==========================================
+// IMPORTAÇÃO DAS ROTAS
+// ==========================================
+const artistasRoutes = require('./routes/artistasRoutes');
+const portfolioRoutes = require('./routes/portfolioRoutes');
+const seguidoresRoutes = require('./routes/seguidoresRoutes');
+const avaliacoesRoutes = require('./routes/avaliacoesRoutes');
+const commissionsRoutes = require('./routes/commissionsRoutes');
+const mensagensRoutes = require('./routes/mensagensRoutes');
+const categoriasRoutes = require('./routes/categoriasRoutes');
+const midiasPerfilRoutes = require('./routes/midiasPerfilRoutes');
+const favoritosRoutes = require('./routes/favoritosRoutes'); // Rota de favoritos importada
 
+// ==========================================
+// ATIVAÇÃO DAS ROTAS (Uso dos endpoints passando o 'db')
+// ==========================================
+app.use('/artistas', artistasRoutes(db));
+app.use('/portfolio', portfolioRoutes(db));
+app.use('/seguidores', seguidoresRoutes(db));
+app.use('/avaliacoes', avaliacoesRoutes(db));
+app.use('/commissions', commissionsRoutes(db));
+
+block: {
+    app.use('/mensagens', mensagensRoutes(db));
+}
+
+app.use('/categorias', categoriasRoutes(db));
+app.use('/midias-perfil', midiasPerfilRoutes(db));
+
+// Aqui ativamos a sua rota de favoritos passando o banco de dados também!
+app.use('/api', favoritosRoutes(db));
+
+// ==========================================
+// INICIALIZAÇÃO DO SERVIDOR (Sempre no final)
+// ==========================================
 const PORT = 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
-
-const artistasRoutes = require('./routes/artistasRoutes');
-app.use('/artistas', artistasRoutes(db));
-
-const portfolioRoutes = require('./routes/portfolioRoutes');
-app.use('/portfolio', portfolioRoutes(db));
-
-
-const seguidoresRoutes = require('./routes/seguidoresRoutes');
-app.use('/seguidores', seguidoresRoutes(db));
-
-const avaliacoesRoutes = require('./routes/avaliacoesRoutes');
-app.use('/avaliacoes', avaliacoesRoutes(db));
-
-// No topo com os outros imports
-const commissionsRoutes = require('./routes/commissionsRoutes');
-
-// Onde ativa as rotas
-app.use('/commissions', commissionsRoutes(db));
-
-
-const mensagensRoutes = require('./routes/mensagensRoutes');
-// ...
-app.use('/mensagens', mensagensRoutes(db));
-
-const categoriasRoutes = require('./routes/categoriasRoutes');
-const midiasPerfilRoutes = require('./routes/midiasPerfilRoutes');
-
-// ... (abaixo das outras rotas)
-app.use('/categorias', categoriasRoutes(db));
-app.use('/midias-perfil', midiasPerfilRoutes(db));
