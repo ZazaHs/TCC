@@ -36,7 +36,8 @@ const commissionsRoutes = require('./routes/commissionsRoutes');
 const mensagensRoutes = require('./routes/mensagensRoutes');
 const categoriasRoutes = require('./routes/categoriasRoutes');
 const midiasPerfilRoutes = require('./routes/midiasPerfilRoutes');
-const favoritosRoutes = require('./routes/favoritosRoutes'); // Rota de favoritos importada
+const favoritosRoutes = require('./routes/favoritosRoutes');
+const authRoutes = require('./routes/authRoutes'); // Rota de favoritos importada
 
 // ==========================================
 // ATIVAÇÃO DAS ROTAS (Uso dos endpoints passando o 'db')
@@ -47,6 +48,7 @@ app.use('/seguidores', seguidoresRoutes(db));
 app.use('/avaliacoes', avaliacoesRoutes(db));
 app.use('/commissions', commissionsRoutes(db));
 
+
 block: {
     app.use('/mensagens', mensagensRoutes(db));
 }
@@ -56,6 +58,7 @@ app.use('/midias-perfil', midiasPerfilRoutes(db));
 
 // Aqui ativamos a sua rota de favoritos passando o banco de dados também!
 app.use('/api', favoritosRoutes(db));
+app.use('/auth', authRoutes(db));
 
 // ==========================================
 // INICIALIZAÇÃO DO SERVIDOR (Sempre no final)
