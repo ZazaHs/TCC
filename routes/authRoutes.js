@@ -3,11 +3,12 @@ const router = express.Router();
 
 module.exports = (db) => {
 
-    // ROTA DE LOGIN (POST)
+    // ==========================================
+    // 1. ROTA DE LOGIN (POST /auth/login)
+    // ==========================================
     router.post('/login', (req, res) => {
         const { email, senha } = req.body;
 
-        // LOG 1: Mostra no terminal o que chegou do Thunder Client
         console.log('--- NOVA TENTATIVA DE LOGIN ---');
         console.log('Recebido no Body -> Email:', email, '| Senha:', senha);
 
@@ -23,25 +24,16 @@ module.exports = (db) => {
                 return res.status(500).json({ error: 'Erro interno no servidor.' });
             }
 
-            // LOG 2: Mostra o que o banco de dados encontrou para esse email
-            console.log('Resultado do Banco (Linhas encontradas):', results.length);
-            if (results.length > 0) {
-                console.log('Senha salva no Banco:', results[0].senha);
-            }
-
-            // Se não achar o email
             if (results.length === 0) {
-                return res.status(401).json({ error: 'Usuario ou senha incorretos. (Email não encontrado)' });
+                return res.status(401).json({ error: 'Usuario ou senha incorretos.' });
             }
 
             const artista = results[0];
 
-            // Compara a senha enviada com a do banco de dados (removendo espaços extras para garantir)
             if (senha.trim() !== artista.senha.trim()) {
-                return res.status(401).json({ error: 'Usuario ou senha incorretos. (Senha não bate)' });
+                return res.status(401).json({ error: 'Usuario ou senha incorretos.' });
             }
 
-            // Se tudo bater, faz o login
             res.json({
                 message: 'Login realizado com sucesso!',
                 user: {
@@ -50,6 +42,50 @@ module.exports = (db) => {
                     email: artista.email,
                     biografia: artista.biografia
                 }
+            });
+        });
+    });
+
+    // ==========================================
+    // 2. NOVA ROTA: CADASTRO (POST /auth/cadastro)
+    // ==========================================
+    router.post('/cadastro', (req, res) => {
+        const { nome, email, senha, biografia } = req.body;
+
+        // Validação dos campos obrigatórios
+        if (!nome || !email || !senha) {
+            return res.status(400).json({ error: 'Nome, email e senha são obrigatórios.' });
+        }
+
+        // PASSO 1: Verificar se o e-mail já existe no banco
+        const checkEmailSql = 'SELECT id_artista FROM artistas WHERE email = ?';
+
+        db.query(checkEmailSql, [email], (err, results) => {
+            if (err) {
+                console.error('Erro ao verificar e-mail:', err);
+                return res.status(500).json({ error: 'Erro interno ao verificar dados.' });
+            }
+
+            // Se retornar alguma linha, o e-mail já está em uso
+            if (results.length > 0) {
+                return res.status(400).json({ error: 'Este e-mail já está cadastrado.' });
+            }
+
+            // PASSO 2: Se o e-mail estiver livre, insere o novo artista
+            const insertSql = 'INSERT INTO artistas (nome, email, senha, biografia) VALUES (?, ?, ?, ?)';
+            const bioValor = biografia || ''; // Se não mandarem bio, salva vazio
+
+            db.query(insertSql, [nome, email, senha, bioValor], (err, result) => {
+                if (err) {
+                    console.error('Erro ao cadastrar artista:', err);
+                    return res.status(500).json({ error: 'Erro interno ao salvar o cadastro.' });
+                }
+
+                // Retorna 201 (Created) com o ID gerado pelo banco
+                res.status(201).json({
+                    message: 'Artista cadastrado com sucesso!',
+                    id_artista: result.insertId
+                });
             });
         });
     });
