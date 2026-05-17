@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>oi</title>
     <link rel="stylesheet" href="/views/css/index.css" />
-  <script src="/views/js/home.js" defer></script>
+   <script src="/views/js/login.js" defer></script>
   </head>
 
   <body>
@@ -13,10 +13,14 @@
         <h1>Amnesia</h1>
        </header>
        <main>
-        <form>
-          <input type="text" placeholder="Nome de Usuario"><br>
-          <input type="password" placeholder="Senha"><br>
-          <button>Entrar</button><br>
+        <form id="formLogin">
+          <input type="email"  id="loginEmail" placeholder="Email"><br>
+          <input type="password"  id="loginSenha" placeholder="Senha"><br>
+
+
+<div id="mensagemErro" style="color: #ff4d4d; font-size: 14px; margin-bottom: 10px; display: none; text-align: center;"></div>
+
+          <button type="submit">Entrar</button><br>
             <a href="/views/pages/cadastro.html">Cadastrar-se</a>
         </form>
        </main>
