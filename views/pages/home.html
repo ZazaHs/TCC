@@ -1,31 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amnesia</title>
-    <link rel="stylesheet" href="/views/css/home.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <script src="/views/js/home.js"></script>
 </head>
-
 <body>
-    <header>
-        <nav class="barra-lateral">
-            <button class="button1"></button>
-            <button class="button2"></button>
-            <button class="button3"></button>
-            <button class="button4"></button>
-            <button class="button5"></button>
-        </nav>
-    </header>
-    <main>
-            <div id="feed-artes" class="feed">
-            </div>
-            <div id="sentinela"></div>
-    </main>
-    <footer>
-         
-    </footer>
-</body>
 
+    <div class="container">
+        <nav class="sidebar">
+            <div class="logo">Amnesia</div>
+            <ul class="nav-links">
+                <li><span>🏠</span> Home</li>
+                <li><span>🔍</span> Pesquisa</li>
+                <li><span>✉️</span> Mensagens</li>
+                <li><span>➕</span> Criar</li>
+                <li><span>👤</span> Perfil</li>
+            </ul>
+        </nav>
+
+        <main class="feed-container">
+            
+           
+            <article class="post">
+                <header class="post-header">
+                    <div class="user-info">
+                        <div class="avatar-small"></div>
+                        <strong>Isac</strong>
+                    </div>
+                    <span>•••</span>
+                </header>
+                
+                <div class="post-image">
+                    <img src="" alt="Post">
+                </div>
+
+                <div class="post-actions">
+                    <div class="left-actions">
+                        <div class="like-container">
+                            <button id="like-btn" class="action-btn">
+                                <span id="like-count">🤍</span>
+                            </button>
+                            <span id="like-icon">0</span>
+                            curtidas
+                        </div>
+                        <button class="action-btn">💬</button>
+                        <button class="action-btn">✈️</button>
+                    </div>
+                </div>
+
+                <div class="post-content">
+                    <p><strong></strong></p>
+                    <span class="view-comments">Ver todos os 7 comentários</span>
+                </div>
+            </article>
+        </main>
+    </div>
+</body>
 </html>

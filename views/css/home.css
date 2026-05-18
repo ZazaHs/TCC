@@ -5,71 +5,186 @@ body{
   font-family: 'Pompiere', cursive;
   color: white;
 }
+/* RESET BÁSICO */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pompiere', cursive;
+}
 
-.barra-lateral{
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 7%;
-    height: auto;
+.container {
+    display: flex; /* Cria as 3 colunas principais */
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
-    gap: 40px;
-    z-index: 999;
-}
-.button1{
-    background-image: url('/views/media/home.jpg');
-    width: 75px;
-    height: 75px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.button2{
-    background-image: url('/views/media/lupa.jpg');
-     width: 75px;
-    height: 75px;
-     border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.button3{
-    background-image: url('/views/media/chat.jpg');
-     width: 75px;
-    height: 75px;
-     border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.button4{
-    background-image: url('/views/media/perfil.jpg');
-     width: 75px;
-    height: 75px;
-     border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.button5{
-    background-image: url('/views/media/config.jpg');
-     width: 75px;
-    height: 75px;
-     border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.feed{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 15px;
+/* 1. SIDEBAR ESQUERDA */
+.sidebar {
+    width: 250px;
+    height: 100vh;
     padding: 20px;
-    margin-left: 90px;
+    border-right: 1px solid #dbdbdb;
+    position: sticky;
+    top: 0;
 }
-.arte-card{
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background-color: #ddd;
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.nav-links li {
+    list-style: none;
+    padding: 15px 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* 2. FEED CENTRAL */
+.feed-container {
+    flex: 1;
+    max-width: 630px;
+    padding: 30px 50px;
+}
+
+.stories {
+    display: flex;
+    gap: 15px;
+    background: white;
+    padding: 15px;
+    border: 1px solid #dbdbdb;
     border-radius: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.story-item {
+    text-align: center;
+    font-size: 12px;
+}
+
+.circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    margin-bottom: 5px;
+}
+
+/* POST */
+.post {
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    align-items: center;
+    color: black;
+}
+
+.avatar-small {
+    width: 32px;
+    height: 32px;
+    background: #ccc;
+    border-radius: 50%;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-image img {
+    width: 100%;
+    display: block;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    font-size: 24px;
+}
+
+.post-content {
+    padding: 0 12px 12px;
+    color: black;
+}
+
+/* 3. ASIDE DIREITA (SUGESTÕES) */
+.suggestions {
+    width: 320px;
+    padding: 40px 20px;
+}
+
+.current-user, .sugg-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.avatar-med {
+    width: 50px;
+    height: 50px;
+    background: #ccc;
+    border-radius: 50%;
+}
+
+.sugg-header {
+    display: flex;
+    justify-content: space-between;
+    color: #8e8e8e;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 20px 0 15px;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: #0095f6;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.sugg-info span {
+    font-size: 12px;
+    color: #8e8e8e;
+}
+/* Remove estilos padrão do botão */
+.action-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.1s ease;
+}
+
+.action-btn:active {
+    transform: scale(1.2); /* Efeito de "pulo" ao clicar */
+}
+
+.like-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+}
+
+/* Classe que será adicionada via JavaScript quando curtir */
+.liked {
+    color: black; /* Cor vermelha do Instagram */
 }
