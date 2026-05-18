@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amnesia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pompiere&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/views/css/comissões.css">
+</head>
+<body>
+
+    <!-- Sidebar Lateral -->
+    <nav class="sidebar">
+        <div class="brand">
+            <h1>Amnesia</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="home.html">Galeria</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+            <li><a href="chat.html">Mensagens</a></li>
+            <li><a href="comissões.html" class="active">Comissões</a></li>
+            <li><a href="ajustes.html">Ajustes</a></li>
+        </ul>
+        <div class="nav-footer">
+            <a href="/views/pages/cadastro.html">Sair</a>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="chat-container">
+        <header class="chat-header">
+            <div class="user-info">
+                <div>
+                    <h2>Painel de Comissões</h2>
+                    <p>Gerencie seus pedidos ativos, prazos e faturamento</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="dashboard-content">
+            
+            <!-- Resumo de Status (Cards Rápidos) -->
+            <div class="status-summary">
+                <div class="summary-card">
+                    Novos Pedidos</span>
+                    <h3>2</h3>
+                </div>
+                <div class="summary-card">
+                    <span>Em Andamento</span>
+                    <h3>3</h3>
+                </div>
+                <div class="summary-card">
+                    <span>Concluídos (Este Mês)</span>
+                    <h3>5</h3>
+                </div>
+            </div>
+
+            <!-- Tabela/Lista de Pedidos Ativos -->
+            <div class="orders-section">
+                <h3>Pedidos Recebidos</h3>
+                
+                <div class="orders-list">
+                    <!-- Pedido 1 -->
+                    <div class="order-item">
+                        <div class="order-info-block">
+                            <span class="client-name">Cliente: @lucas_art</span>
+                            <span class="order-type">Personagem Inteiro (Full Body)</span>
+                        </div>
+                        <div class="order-meta">
+                            <span class="deadline">Prazo: 25/05</span>
+                            <span class="price">R$ 150,00</span>
+                            <span class="badge badge-pending">Pendente</span>
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn-action-white">Aceitar</button>
+                            <button class="btn-action-text">Recusar</button>
+                        </div>
+                    </div>
+
+                    <!-- Pedido 2 -->
+                    <div class="order-item">
+                        <div class="order-info-block">
+                            <span class="client-name">Cliente: @editora_xyz</span>
+                            <span class="order-type">Capa de Livro Fantasia</span>
+                        </div>
+                        <div class="order-meta">
+                            <span class="deadline">Prazo: 02/06</span>
+                            <span class="price">R$ 400,00</span>
+                            <span class="badge badge-progress">Em Andamento</span>
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn-action-white">Concluir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+</body>
+</html>

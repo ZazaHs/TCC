@@ -1,0 +1,228 @@
+/* Reset e Base Geral */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Pompiere', cursive;
+    background-color: #0f0f0f;
+    color: #e0e0e0;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    width: 240px;
+    background-color: #161616;
+    border-right: 1px solid #2a2a2a;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+}
+
+.brand h1 {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.nav-links {
+    list-style: none;
+    flex-grow: 1;
+}
+
+.nav-links a {
+    color: #999;
+    text-decoration: none;
+    font-size: 1.5rem;
+    display: block;
+    padding: 10px 15px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: #fff;
+    background-color: #252525;
+}
+
+.nav-links a.active {
+    border-left: 4px solid #ffffff; /* Destaque em Branco */
+}
+
+.nav-footer a {
+    color: #666;
+    text-decoration: none;
+    font-size: 1.3rem;
+}
+
+/* --- Estrutura Principal --- */
+.chat-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding: 20px 40px;
+    background-color: #161616;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.user-info h2 { font-size: 2rem; color: #fff; }
+.user-info p { font-size: 1.1rem; color: #777; }
+
+/* --- Dashboard Conteúdo --- */
+.dashboard-content {
+    flex-grow: 1;
+    padding: 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Cards de Resumo */
+.status-summary {
+    display: flex;
+    gap: 20px;
+}
+
+.summary-card {
+    background-color: #161616;
+    border: 1px solid #2a2a2a;
+    padding: 20px;
+    border-radius: 12px;
+    flex: 1;
+}
+
+.summary-card span {
+    font-size: 1.2rem;
+    color: #777;
+}
+
+.summary-card h3 {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-top: 5px;
+}
+
+/* Lista de Pedidos */
+.orders-section h3 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 10px;
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.order-item {
+    background-color: #161616;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.order-item:hover {
+    border-color: #fff; /* Acende a borda em branco */
+}
+
+.order-info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 30%;
+}
+
+.client-name {
+    font-size: 1.4rem;
+    color: #fff;
+}
+
+.order-type {
+    font-size: 1.1rem;
+    color: #777;
+}
+
+.order-meta {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    width: 40%;
+}
+
+.deadline { font-size: 1.2rem; color: #aaa; }
+.price { font-size: 1.4rem; color: #fff; font-weight: bold; }
+
+/* Badges de Status (Mantendo minimalista) */
+.badge {
+    font-size: 1rem;
+    padding: 3px 12px;
+    border-radius: 15px;
+    border: 1px solid transparent;
+}
+
+.badge-pending {
+    border-color: #aaa;
+    color: #aaa;
+}
+
+.badge-progress {
+    border-color: #fff;
+    color: #000;
+    background-color: #fff;
+}
+
+/* Botões de Ação */
+.order-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: flex-end;
+    width: 30%;
+}
+
+.btn-action-white {
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-family: 'Pompiere', cursive;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-action-white:hover {
+    background-color: #e0e0e0;
+}
+
+.btn-action-text {
+    background: none;
+    border: none;
+    color: #777;
+    font-family: 'Pompiere', cursive;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-action-text:hover {
+    color: #ff4444;
+}
