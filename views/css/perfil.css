@@ -22,6 +22,17 @@ body {
     flex-direction: column;
     padding: 30px 20px;
 }
+/* Cor cinza para o botão Sair no rodapé da sidebar */
+.nav-footer a {
+    color: #666;
+    text-decoration: none;
+    font-size: 1.3rem;
+    transition: 0.3s;
+}
+
+.nav-footer a:hover {
+    color: #fff; /* Fica branco quando passa o mouse */
+}
 
 .brand h1 {
     font-size: 2.5rem;
