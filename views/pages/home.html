@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,76 +8,58 @@
     <link rel="stylesheet" href="/views/css/home.css">
     <script src="/views/js/home.js"></script>
 </head>
+
 <body>
 
     <div class="container">
-       <nav class="sidebar">
-    <div class="logo">Amnesia</div>
-    <ul class="nav-links">
-        <li>
-            <a href="/views/pages/home.html">
-                <span>🏠</span> Home
-            </a>
-        </li>
-        <li>
-            <a href="/views/pages/pesquisar.html">
-                <span>🧭</span> Pesquisar
-            </a>
-        </li>
-        <li>
-            <a href="/views/pages/chat.html">
-                <span>✉️</span> Mensagens
-            </a>
-        </li>
-        <li>
-            <a href="/views/pages/perfil.html">
-                <span>👤</span> Perfil
-            </a>
-        </li>
-        <li>
-            <a href="/views/pages/ajustes.html">
-                <span>⚙️</span> Configurações
-            </a>
-        </li>
-    </ul>
-</nav>
+        <nav class="sidebar">
+            <div class="logo">Amnesia</div>
+            <ul class="nav-links">
+                <li>
+                    <a href="/views/pages/home.html">
+                        <span>🏠</span> Home
+                    </a>
+                </li>
+                <li>
+                    <a href="/views/pages/pesquisar.html">
+                        <span>🧭</span> Pesquisar
+                    </a>
+                </li>
+                <li>
+                    <a href="/views/pages/chat.html">
+                        <span>✉️</span> Mensagens
+                    </a>
+                </li>
+                <li>
+                    <a href="/views/pages/perfil.html">
+                        <span>👤</span> Perfil
+                    </a>
+                </li>
+                <li>
+                    <a href="/views/pages/ajustes.html">
+                        <span>⚙️</span> Configurações
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
         <main class="feed-container">
-            
-           
-            <article class="post">
-                <header class="post-header">
-                    <div class="user-info">
-                        <div class="avatar-small"></div>
-                        <strong>Isac</strong>
-                    </div>
-                    <span>•••</span>
-                </header>
-                
-                <div class="post-image">
-                    <img src="" alt="Post">
-                </div>
 
-                <div class="post-actions">
-                    <div class="left-actions">
-                        <div class="like-container">
-                            <button id="like-btn" class="action-btn">
-                                <span id="like-count">🤍</span>
-                            </button>
-                            <span id="like-icon">0</span>
-                            curtidas
-                        </div>
-                        <button class="action-btn">💬</button>
-                        <button class="action-btn">✈️</button>
-                    </div>
-                </div>
+            <section class="create-post-box">
+                <h3>Criar Nova Publicação</h3>
+                <form id="form-novo-post">
+                    <textarea id="post-legenda" placeholder="Escreva uma legenda ou título..." required></textarea>
+                    <input type="url" id="post-url-imagem" placeholder="Cole a URL de uma imagem da internet..."
+                        required>
+                    <button type="submit" class="btn-enviar">Publicar</button>
+                </form>
+            </section>
 
-                <div class="post-content">
-                    <p><strong></strong></p>
-                    <span class="view-comments">Ver todos os 7 comentários</span>
-                </div>
-            </article>
+            <section id="feed-posts">
+            </section>
+
         </main>
     </div>
 </body>
+
 </html>
