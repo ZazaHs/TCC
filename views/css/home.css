@@ -35,11 +35,28 @@ body{
     margin-bottom: 40px;
 }
 
+/* Remove a estilização padrão dos links dentro da nav-links */
+.nav-links a {
+    text-decoration: none; /* Remove o sublinhado */
+    color: gray;        /* Deixa o texto preto (ou a cor que preferir) */
+    display: flex;         /* Garante que o link ocupe todo o espaço do item */
+    align-items: center;
+    gap: 10px;             /* Espaço entre o ícone e o texto */
+    width: 100%;
+}
+
 .nav-links li {
     list-style: none;
-    padding: 15px 0;
+    padding: 12px 15px;
     font-size: 16px;
     cursor: pointer;
+    border-radius: 8px;    /* Deixa os cantos arredondados no efeito de passar o mouse */
+    transition: background 0.2s ease;
+}
+
+/* Efeito visual opcional: destaca o item quando o usuário passa o mouse por cima */
+.nav-links li:hover {
+    background-color: #f2f2f2; 
 }
 
 /* 2. FEED CENTRAL */
