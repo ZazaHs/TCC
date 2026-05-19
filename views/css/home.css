@@ -3,7 +3,7 @@
 body{
   background-color: black;
   font-family: 'Pompiere', cursive;
-  color: white;
+  
 }
 /* RESET BÁSICO */
 * {
@@ -33,13 +33,31 @@ body{
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 40px;
+    color: white;
+}
+
+/* Remove a estilização padrão dos links dentro da nav-links */
+.nav-links a {
+    text-decoration: none; /* Remove o sublinhado */
+    color: gray;        /* Deixa o texto preto (ou a cor que preferir) */
+    display: flex;         /* Garante que o link ocupe todo o espaço do item */
+    align-items: center;
+    gap: 10px;             /* Espaço entre o ícone e o texto */
+    width: 100%;
 }
 
 .nav-links li {
     list-style: none;
-    padding: 15px 0;
+    padding: 12px 15px;
     font-size: 16px;
     cursor: pointer;
+    border-radius: 8px;    /* Deixa os cantos arredondados no efeito de passar o mouse */
+    transition: background 0.2s ease;
+}
+
+/* Efeito visual opcional: destaca o item quando o usuário passa o mouse por cima */
+.nav-links li:hover {
+    background-color: #f2f2f2; 
 }
 
 /* 2. FEED CENTRAL */
@@ -47,30 +65,6 @@ body{
     flex: 1;
     max-width: 630px;
     padding: 30px 50px;
-}
-
-.stories {
-    display: flex;
-    gap: 15px;
-    background: white;
-    padding: 15px;
-    border: 1px solid #dbdbdb;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    overflow-x: auto;
-}
-
-.story-item {
-    text-align: center;
-    font-size: 12px;
-}
-
-.circle {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    margin-bottom: 5px;
 }
 
 /* POST */
@@ -119,72 +113,210 @@ body{
     color: black;
 }
 
-/* 3. ASIDE DIREITA (SUGESTÕES) */
-.suggestions {
-    width: 320px;
-    padding: 40px 20px;
+/* Classe que será adicionada via JavaScript quando curtir */
+.liked {
+    color: black; /* Cor vermelha do Instagram */
 }
 
-.current-user, .sugg-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* Caixa do Formulário de Criação */
+.create-post-box {
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.create-post-box h3 {
+    font-size: 16px;
     margin-bottom: 15px;
+    color: #262626;
 }
 
-.avatar-med {
-    width: 50px;
-    height: 50px;
-    background: #ccc;
-    border-radius: 50%;
-}
-
-.sugg-header {
+.create-post-box form {
     display: flex;
-    justify-content: space-between;
-    color: #8e8e8e;
-    font-weight: bold;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Estilização dos campos de entrada */
+.create-post-box textarea, 
+.create-post-box input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
     font-size: 14px;
-    margin: 20px 0 15px;
+    outline: none;
+    resize: none; /* Impede o usuário de deformar a caixinha de texto */
 }
 
-.btn-link {
-    background: none;
+.create-post-box textarea {
+    height: 80px;
+}
+
+/* Botão de Enviar */
+.btn-enviar {
+    background-color: #0095f6;
+    color: white;
     border: none;
-    color: #0095f6;
+    padding: 8px 16px;
     font-weight: bold;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 12px;
+    align-self: flex-end; /* Alinha o botão à direita */
+    transition: background-color 0.2s ease;
 }
 
-.sugg-info span {
-    font-size: 12px;
-    color: #8e8e8e;
+.btn-enviar:hover {
+    background-color: #1877f2;
 }
-/* Remove estilos padrão do botão */
-.action-btn {
+
+/* Container das ações do post */
+.post-actions {
+    padding: 8px 12px;
+}
+
+.interaction-group {
+    display: flex;
+    flex-direction: column; /* Deixa o contador abaixo do botão */
+    gap: 6px;
+}
+
+/* Reseta o estilo padrão do botão para parecer um ícone clicável */
+.like-btn {
     background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
     padding: 0;
+    width: fit-content;
     transition: transform 0.1s ease;
 }
 
-.action-btn:active {
-    transform: scale(1.2); /* Efeito de "pulo" ao clicar */
+/* Efeito de pulo ao clicar */
+.like-btn:active {
+    transform: scale(1.2);
 }
 
-.like-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+/* Estilo do texto do contador */
+.likes-count {
+    font-weight: 600;
     font-size: 14px;
-    font-weight: bold;
-    color: black;
+    color: #262626;
 }
 
-/* Classe que será adicionada via JavaScript quando curtir */
-.liked {
-    color: black; /* Cor vermelha do Instagram */
+/* Classe aplicada pelo JS quando o post for curtido */
+.curtido {
+    color: #ed4956; /* Vermelho Instagram */
+}
+
+/* Container que abriga a lista de comentários */
+.comments-section {
+    padding: 12px;
+    border-top: 1px solid #efefef;
+    background-color: #fafafa; /* Um leve fundo cinza para destacar a área (opcional) */
+}
+
+.comments-list {
+    margin-top: 4px;
+    
+    /* DEFINA A ALTURA MÁXIMA AQUI */
+    max-height: 100px; /* Altere esse valor se quiser que caibam mais ou menos comentários antes de rolar */
+    
+    /* ATIVA A ROLAGEM APENAS VERTICAL */
+    overflow-y: auto; 
+    
+    /* Esconde a barra de rolagem horizontal se algo escapar */
+    overflow-x: hidden; 
+    
+    padding-right: 5px; /* Espaço para a barra de rolagem não cobrir o texto */
+}
+.comment-item {
+    font-size: 14px;
+    margin-bottom: 6px;
+    line-height: 1.4;
+    word-break: break-word; /* Força a quebra de linha se o usuário digitar uma palavra gigante */
+}
+/* Formulário de adicionar comentário (estilo input do Instagram) */
+.comment-form {
+    display: flex;
+    border-top: 1px solid #efefef;
+    padding-top: 8px;
+    margin-top: 8px;
+    align-items: center;
+}
+.comment-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: transparent;
+}
+.btn-comment-post {
+    background: none;
+    border: none;
+    color: #0095f6;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+.btn-comment-post:disabled {
+    opacity: 0.3; /* Fica clarinho quando não houver texto */
+    cursor: default;
+}
+
+/* ===================================================
+   CUSTOMIZAÇÃO DA BARRA DE ROLAGEM (MINIMALISTA)
+   =================================================== */
+
+/* 1. Define a largura da barra vertical (e altura da horizontal, se houver) */
+.comments-list::-webkit-scrollbar {
+    width: 4px;               /* Deixa a barra bem fininha */
+    height: 4px;
+}
+
+/* 2. O "Fundo" da barra (a pista por onde o indicador corre) */
+.comments-list::-webkit-scrollbar-track {
+    background: transparent;  /* Mantém o fundo invisível para não poluir */
+}
+
+/* 3. O "Indicador" (a pecinha que se move quando você arrasta) */
+.comments-list::-webkit-scrollbar-thumb {
+    background-color: #dbdbdb; /* Cor cinza clara, idêntica às bordas do Instagram */
+    border-radius: 10px;       /* Deixa as extremidades arredondadas */
+}
+
+/* 4. Efeito opcional: escurece levemente o indicador quando o mouse passa por cima */
+.comments-list::-webkit-scrollbar-thumb:hover {
+    background-color: #a8a8a8; 
+}
+
+/* --- Suporte para o navegador Firefox --- */
+.comments-list {
+    scrollbar-width: thin;          /* Deixa fina no Firefox */
+    scrollbar-color: #dbdbdb transparent; /* Cor do indicador e do fundo no Firefox */
+}
+
+/* Botão de Excluir no cabeçalho do post */
+.btn-deletar {
+    background: none;
+    border: none;
+    color: #8e8e8e;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-deletar:hover {
+    color: #ed4956; /* Fica vermelho ao passar o mouse */
+    transform: scale(1.1);
+}
+
+.btn-deletar:active {
+    transform: scale(0.9);
 }
