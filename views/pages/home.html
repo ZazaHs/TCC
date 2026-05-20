@@ -46,14 +46,19 @@
         <main class="feed-container">
 
             <section class="create-post-box">
-                <h3>Criar Nova Publicação</h3>
-                <form id="form-novo-post">
-                    <textarea id="post-legenda" placeholder="Escreva uma legenda ou título..." required></textarea>
-                    <input type="url" id="post-url-imagem" placeholder="Cole a URL de uma imagem da internet..."
-                        required>
-                    <button type="submit" class="btn-enviar">Publicar</button>
-                </form>
-            </section>
+    <h3>Criar Nova Publicação</h3>
+    <form id="form-novo-post">
+        <textarea id="post-legenda" placeholder="Escreva uma legenda ou título..." required></textarea>
+        
+        <div class="file-input-wrapper">
+            <label for="post-imagem-arquivo" class="btn-arquivo-label">Selecionar Imagem do Computador</label>
+            <input type="file" id="post-imagem-arquivo" accept="image/*" required>
+            <span id="nome-arquivo-selecionado">Nenhum arquivo selecionado</span>
+        </div>
+        
+        <button type="submit" class="btn-enviar">Publicar</button>
+    </form>
+</section>
 
             <section id="feed-posts">
             </section>
