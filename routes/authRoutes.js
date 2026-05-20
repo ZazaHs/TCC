@@ -47,17 +47,15 @@ module.exports = (db) => {
     });
 
     // ==========================================
-    // 2. NOVA ROTA: CADASTRO (POST /auth/cadastro)
+    // 2. ROTA DE CADASTRO (POST /auth/cadastro)
     // ==========================================
     router.post('/cadastro', (req, res) => {
         const { nome, email, senha, biografia } = req.body;
 
-        // Validação dos campos obrigatórios
         if (!nome || !email || !senha) {
             return res.status(400).json({ error: 'Nome, email e senha são obrigatórios.' });
         }
 
-        // PASSO 1: Verificar se o e-mail já existe no banco
         const checkEmailSql = 'SELECT id_artista FROM artistas WHERE email = ?';
 
         db.query(checkEmailSql, [email], (err, results) => {
@@ -66,14 +64,12 @@ module.exports = (db) => {
                 return res.status(500).json({ error: 'Erro interno ao verificar dados.' });
             }
 
-            // Se retornar alguma linha, o e-mail já está em uso
             if (results.length > 0) {
                 return res.status(400).json({ error: 'Este e-mail já está cadastrado.' });
             }
 
-            // PASSO 2: Se o e-mail estiver livre, insere o novo artista
             const insertSql = 'INSERT INTO artistas (nome, email, senha, biografia) VALUES (?, ?, ?, ?)';
-            const bioValor = biografia || ''; // Se não mandarem bio, salva vazio
+            const bioValor = biografia || ''; 
 
             db.query(insertSql, [nome, email, senha, bioValor], (err, result) => {
                 if (err) {
@@ -81,7 +77,6 @@ module.exports = (db) => {
                     return res.status(500).json({ error: 'Erro interno ao salvar o cadastro.' });
                 }
 
-                // Retorna 201 (Created) com o ID gerado pelo banco
                 res.status(201).json({
                     message: 'Artista cadastrado com sucesso!',
                     id_artista: result.insertId
@@ -89,6 +84,50 @@ module.exports = (db) => {
             });
         });
     });
+
+    // =======================================================
+    // 3. NOVA ROTA: BUSCAR DADOS DO PERFIL (GET /auth/perfil/:id)
+    // =======================================================
+router.get('/perfil/:id', (req, res) => {
+    const idArtista = req.params.id;
+    // Garanta que o foto_perfil esteja no SELECT
+    const query = "SELECT id_artista, nome, email, biografia, foto_perfil FROM artistas WHERE id_artista = ?";
+
+    db.query(query, [idArtista], (err, results) => {
+        if (err) return res.status(500).json({ error: "Erro no banco" });
+        if (results.length === 0) return res.status(404).json({ error: "Não encontrado" });
+        
+        res.json(results[0]);
+    });
+});
+
+    // =======================================================
+    // 4. NOVA ROTA: SALVAR ALTERAÇÕES (PUT /auth/atualizar-perfil)
+    // =======================================================
+  
+
+    // Exemplo de como deve ficar a sua rota PUT no Node.js
+router.put('/atualizar-perfil', (req, res) => {
+    const { id, nome, biografia, foto_perfil } = req.body;
+
+    // Se o front-end enviou uma nova foto, atualiza tudo. Se não enviou, mantém a antiga.
+    let query = "UPDATE artistas SET nome = ?, biografia = ? WHERE id_artista = ?";
+    let dados = [nome, biografia, id];
+
+    if (foto_perfil) {
+        query = "UPDATE artistas SET nome = ?, biografia = ?, foto_perfil = ? WHERE id_artista = ?";
+        dados = [nome, biografia, foto_perfil, id];
+    }
+
+    db.query(query, dados, (err, result) => {
+        if (err) {
+            console.error("Erro ao atualizar perfil no MySQL:", err);
+            return res.status(500).json({ error: "Erro ao salvar no banco de dados." });
+        }
+        res.json({ message: "Perfil atualizado com sucesso!" });
+    });
+});
+    
 
     return router;
 };

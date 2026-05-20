@@ -7,7 +7,9 @@ const app = express();
 
 // Middlewares
 app.use(cors());
-app.use(express.json());
+// Procure essas linhas no seu servidor e mude para:
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Configuração da Conexão com o MySQL
 const db = mysql.createConnection({

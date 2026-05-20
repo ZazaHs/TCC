@@ -5,95 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Perfil | ArtHub</title>
     <link href="https://fonts.googleapis.com/css2?family=Pompiere&display=swap" rel="stylesheet">
-    <!-- Adicionado Font Awesome para o ícone de câmera -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/views/css/perfil.css">
 </head>
 <body>
 
     <div class="container">
-       <nav class="sidebar">
-    <div class="logo">Amnesia</div>
-    <ul class="nav-links">
-        <li>
-            <a href="/views/pages/home.html">
-                <span>🏠</span> Home
-            </a>
-        </li>
-        <li>
-            <a href="/views/pages/pesquisar.html">
-                <span>🧭</span> Pesquisar
-            </a>
-        </li>
-        <li>
-            <a href="/views/pages/chat.html">
-                <span>✉️</span> Mensagens
-            </a>
-        </li>
-        <li>
-            <a href="/views/pages/perfil.html">
-                <span>👤</span> Perfil
-            </a>
-        </li>
-        <li>
-            <a href="/views/pages/ajustes.html">
-                <span>⚙️</span> Configurações
-            </a>
-        </li>
-    </ul>
-</nav>
+        <nav class="sidebar">
+            <div class="logo">Amnesia</div>
+            <ul class="nav-links">
+                <li>
+                    <a href="/views/pages/home.html">
+                        <span>🏠</span> Home
+                    </a>
+                </li>
+                <li>
+                    <a href="/views/pages/pesquisar.html">
+                        <span>🧭</span> Pesquisar
+                    </a>
+                </li>
+                <li>
+                    <a href="/views/pages/chat.html">
+                        <span>✉️</span> Mensagens
+                    </a>
+                </li>
+                <li>
+                    <a href="/views/pages/perfil.html" class="link-meu-perfil">
+                        <span>👤</span> Perfil
+                    </a>
+                </li>
+                <li>
+                    <a href="/views/pages/ajustes.html">
+                        <span>⚙️</span> Configurações
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-    <main class="chat-container">
-        <header class="chat-header">
-            <div class="user-info">
-                <div>
-                    <h2>Editar Perfil</h2>
-                    <p>Mantenha suas informações de artista atualizadas</p>
+        <main class="chat-container">
+            <header class="chat-header">
+                <div class="user-info">
+                    <div>
+                        <h2>Editar Perfil</h2>
+                        <p>Mantenha suas informações de artista updated</p>
+                    </div>
                 </div>
-            </div>
-        </header>
+            </header>
 
-        <section class="profile-content">
-            <div class="photo-section">
-                <div class="profile-photo-container">
-                    <!-- Preview da Foto (ID imagePreview para o JS funcionar) -->
-                    <div class="photo-placeholder" id="imagePreview"></div> 
+            <section class="profile-content">
+                <div class="photo-section">
+                    <div class="profile-photo-container">
+                        <div class="photo-placeholder" id="imagePreview"></div> 
+                        <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" style="display: none;" />
+                        <label for="imageUpload" class="change-photo-btn">
+                            <i class="fas fa-camera"></i> Alterar Foto
+                        </label>
+                    </div>
+                    <p class="photo-hint">Recomendado: 500x500px (JPG ou PNG)</p>
+                </div>
+
+                <form class="edit-form" id="formEditarPerfil">
+                    <div class="input-group">
+                        <label for="username">Nome de Usuário</label>
+                        <input type="text" id="username" placeholder="@usuario">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bio">Bio (Biografia)</label>
+                        <textarea id="bio" placeholder="Conte ao mundo sobre suas inspirações..."></textarea>
+                    </div>
                     
-                    <!-- Input de arquivo escondido -->
-                    <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" style="display: none;" />
-                    
-                    <!-- Botão que aciona o explorador de arquivos -->
-                    <label for="imageUpload" class="change-photo-btn">
-                        <i class="fas fa-camera"></i> Alterar Foto
-                    </label>
-                </div>
-                <p class="photo-hint">Recomendado: 500x500px (JPG ou PNG)</p>
-            </div>
-
-            <form class="edit-form">
-                <div class="input-group">
-                    <label for="username">Nome de Usuário</label>
-                    <input type="text" id="username" value="SeuNomeDeArtista" placeholder="@usuario">
-                </div>
-
-                <div class="input-group">
-                    <label for="bio">Bio (Biografia)</label>
-                    <textarea id="bio" placeholder="Conte ao mundo sobre suas inspirações...">Sou um artista focado em arte digital e concept art...</textarea>
-                </div>
-                
-                <div class="input-area" style="background: none; padding: 20px 0;">
-                    <button type="submit" class="save-btn">Salvar Perfil</button>
-                </div>
-            </form>
-        </section>
-    </main>
+                    <div class="input-area" style="background: none; padding: 20px 0;">
+                        <button type="submit" class="save-btn">Salvar Perfil</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
 
     <script>
-        // Script para abrir o explorador e visualizar a imagem instantaneamente
         document.getElementById("imageUpload").onchange = function() {
             const reader = new FileReader();
             reader.onload = function(e) {
-                // Aplica a imagem escolhida ao círculo de preview
                 const preview = document.getElementById("imagePreview");
                 preview.style.backgroundImage = `url(${e.target.result})`;
                 preview.style.backgroundSize = 'cover';
@@ -102,6 +95,8 @@
             reader.readAsDataURL(this.files[0]);
         };
     </script>
+
+    <script src="../js/perfil.js"></script>
 
 </body>
 </html>

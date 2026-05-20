@@ -60,6 +60,20 @@
 
         </main>
     </div>
+
+    <script>
+    // Captura o ID da URL da Home e salva na memória para as outras páginas usarem
+    const urlParams = new URLSearchParams(window.location.search);
+    const idUrl = urlParams.get('id');
+    if (idUrl) {
+        sessionStorage.setItem('idArtistaLogado', idUrl);
+    }
+
+
+    
+</script>
+
+
 </body>
 
 </html>
