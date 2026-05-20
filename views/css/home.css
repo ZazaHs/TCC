@@ -157,7 +157,7 @@ body{
 
 /* Botão de Enviar */
 .btn-enviar {
-    background-color: #0095f6;
+    background-color: #000000;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -165,7 +165,44 @@ body{
     border-radius: 6px;
     cursor: pointer;
     align-self: flex-end; /* Alinha o botão à direita */
-    transition: background-color 0.2s ease;
+    
+}
+/* Container do campo de arquivo */
+.file-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+/* Esconde o input de arquivo feio do sistema */
+#post-imagem-arquivo {
+    display: none;
+}
+
+/* Estiliza a label para parecer um botão elegante */
+.btn-arquivo-label {
+    background-color: #fafafa;
+    color: #262626;
+    border: 1px solid #dbdbdb;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-arquivo-label:hover {
+    background-color: #f2f2f2;
+}
+
+/* Texto que mostra o nome do arquivo selecionado */
+#nome-arquivo-selecionado {
+    font-size: 12px;
+    color: #8e8e8e;
+    font-style: italic;
 }
 
 .btn-enviar:hover {
