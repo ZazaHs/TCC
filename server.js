@@ -13,19 +13,20 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Configuração da Conexão com o MySQL
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'isac', 
-    database: 'banco_amnesia'
+    host: 'bm12c3vl3xtvh9kizaif-mysql.services.clever-cloud.com',
+    user: 'u0ehyx8dioi7dbbw',
+    password: 'eLZvJVunXIqJ0dFnGyvX', 
+    port:3306,
+    database: 'bm12c3vl3xtvh9kizaif'
 });
 
 // Conectar ao Banco
 db.connect((err) => {
     if (err) {
-        console.error('Erro ao conectar ao banco:', err.message);
+        console.error('Erro ao conectar ao banco na nuvem:', err.message);
         return;
     }
-    console.log('Conectado ao banco_amnesia com sucesso!');
+    console.log('Conectado ao banco_amnesia na nuvem com sucesso!');
 });
 
 // ==========================================
