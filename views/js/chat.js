@@ -1,171 +1,243 @@
 // views/js/chat.js
 document.addEventListener('DOMContentLoaded', () => {
-    const listaContatosContainer = document.getElementById('lista-contatos');
-    const chatMensagens = document.getElementById('chat-mensagens');
-    const mensagemInput = document.getElementById('mensagem-input');
-    const btnEnviar = document.getElementById('btn-enviar-mensagem');
-    
+    const idLogado = sessionStorage.getItem('idArtistaLogado');
+    let idConversaAtiva = sessionStorage.getItem('idConversaAtiva'); 
+
+    console.log("Chat Inicializado. Meu ID:", idLogado);
+    console.log("ID da Conversa ativa:", idConversaAtiva);
+
+    const listaContatos = document.getElementById('lista-contatos');
     const janelaChatAtiva = document.getElementById('janela-chat-ativa');
     const chatVazio = document.getElementById('chat-vazio');
     
     const conversaNome = document.getElementById('conversa-nome');
     const conversaBio = document.getElementById('conversa-bio');
     const conversaFoto = document.getElementById('conversa-foto');
+    
+    const chatMensagens = document.getElementById('chat-mensagens');
+    const mensagemInput = document.getElementById('mensagem-input');
+    const btnEnviarMensagem = document.getElementById('btn-enviar-mensagem');
 
-    // Resgata o ID do artista logado (definido lá na Home/Login)
-    const idLogado = sessionStorage.getItem('idArtistaLogado');
-    let idDestinatarioAtual = null;
-    let intervaloChat = null; // Guardará o atualizador automático de mensagens
+    const itemMenuMensagens = document.querySelector('a[href*="chat.html"]') || document.getElementById('menu-mensagens');
+
+    let intervaloMensagens = null; 
 
     if (!idLogado) {
-        alert('Erro: Usuário não identificado. Faça login novamente para usar o chat.');
+        alert("Por favor, faça login para acessar suas mensagens.");
+        window.location.href = "/index.html";
         return;
     }
 
-    // ==========================================
-    // 1. CARREGAR ARTISTAS NA BARRA LATERAL
-    // ==========================================
+    if (itemMenuMensagens) {
+        itemMenuMensagens.style.position = 'relative';
+    }
+
     async function carregarContatos() {
         try {
-            const response = await fetch(`http://localhost:3000/api/mensagens/contatos/${idLogado}`);
+            const response = await fetch(`http://localhost:3000/mensagens/contatos/${idLogado}`);
+            if (!response.ok) throw new Error("Erro ao buscar contatos");
+
             const artistas = await response.json();
-            
-            listaContatosContainer.innerHTML = '';
+            if (!listaContatos) return;
+
+            listaContatos.innerHTML = '';
 
             if (artistas.length === 0) {
-                listaContatosContainer.innerHTML = '<p style="color: #888; font-size: 14px;">Nenhum outro artista cadastrado.</p>';
+                listaContatos.innerHTML = '<p style="color: #666; font-size: 14px; padding: 10px;">Você não segue nenhum artista.</p>';
+                atualizarBolinhaGlobal(false);
                 return;
             }
 
+            let temMensagemNaoLidaGeral = false;
+
             artistas.forEach(artista => {
-                const foto = artista.foto_perfil || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-                const contatoDiv = document.createElement('div');
+                const item = document.createElement('div');
+                item.classList.add('contato-item');
                 
-                // Estilização rápida via JS para manter o padrão escuro do Amnesia
-                contatoDiv.style = "display: flex; align-items: center; gap: 12px; padding: 12px; background: #222; border-radius: 8px; cursor: pointer; transition: 0.2s; border: 1px solid #333;";
-                contatoDiv.innerHTML = `
-                    <img src="${foto}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #444;">
-                    <div style="display: flex; flex-direction: column;">
-                        <span style="color: #fff; font-weight: bold; font-size: 15px;">${artista.nome}</span>
-                        <span style="color: #888; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;">${artista.biografia || 'Clique para conversar'}</span>
+                item.style = `
+                    display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; 
+                    background: #222; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 8px;
+                `;
+                
+                if (artista.id_artista == idConversaAtiva) {
+                    item.style.background = '#333'; 
+                }
+
+                const fotoUrl = artista.foto_perfil || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                const deveMostrarBolinhaLocal = artista.tem_novas_mensagens == 1 && artista.id_artista != idConversaAtiva;
+                
+                if (artista.tem_novas_mensagens == 1) {
+                    temMensagemNaoLidaGeral = true;
+                }
+
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${fotoUrl}" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                        <span style="color: #fff; font-weight: 500; font-size: 15px;">${artista.nome}</span>
                     </div>
+                    ${deveMostrarBolinhaLocal ? `
+                        <span class="bolinha-notificacao" style="
+                            width: 10px; height: 10px; background-color: #ff3b30; 
+                            border-radius: 50%; display: inline-block; margin-right: 5px;
+                            box-shadow: 0 0 8px #ff3b30;
+                        "></span>
+                    ` : ''}
                 `;
 
-                // Efeito hover simples
-                contatoDiv.addEventListener('mouseenter', () => contatoDiv.style.background = '#2a2a2a');
-                contatoDiv.addEventListener('mouseleave', () => contatoDiv.style.background = '#222');
+                item.addEventListener('click', () => {
+                    idConversaAtiva = artista.id_artista;
+                    sessionStorage.setItem('idConversaAtiva', idConversaAtiva);
+                    
+                    const bolinha = item.querySelector('.bolinha-notificacao');
+                    if (bolinha) bolinha.remove();
 
-                // Quando clicar no artista, abre o chat com ele
-                contatoDiv.addEventListener('click', () => abrirConversa(artista));
-                listaContatosContainer.appendChild(contatoDiv);
+                    abrirConversa(artista);
+                });
+
+                listaContatos.appendChild(item);
             });
+
+            atualizarBolinhaGlobal(temMensagemNaoLidaGeral);
+
         } catch (error) {
-            console.error('Erro ao carregar lista de contatos:', error);
-            listaContatosContainer.innerHTML = '<p style="color: red; font-size: 12px;">Erro ao carregar contatos.</p>';
+            console.error("Erro ao carregar lista de contatos:", error);
+            if (listaContatos) {
+                listaContatos.innerHTML = '<p style="color: #ff3b30; font-size: 14px; padding: 10px;">Erro ao carregar contatos.</p>';
+            }
         }
     }
 
-    // ==========================================
-    // 2. ABRIR CONVERSA SELECIONADA
-    // ==========================================
-    function abrirConversa(artista) {
-        idDestinatarioAtual = artista.id_artista;
+    function atualizarBolinhaGlobal(mostrar) {
+        if (!itemMenuMensagens) return;
+        let bolinhaGlobal = itemMenuMensagens.querySelector('.bolinha-menu-global');
         
-        // Altera o cabeçalho do chat ativo com as informações do contato
-        conversaNome.textContent = artista.nome;
-        conversaBio.textContent = artista.biografia || 'Artista Amnesia';
-        conversaFoto.src = artista.foto_perfil || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-        conversaFoto.style.display = 'block';
-
-        // Alterna os contêineres na tela
-        chatVazio.style.display = 'none';
-        janelaChatAtiva.style.display = 'flex';
-
-        // Carrega o histórico imediatamente
-        carregarMensagens();
-
-        // Cria um timer para atualizar o chat a cada 2.5 segundos (Simula o tempo real)
-        if (intervaloChat) clearInterval(intervaloChat);
-        intervaloChat = setInterval(carregarMensagens, 2500);
+        if (mostrar) {
+            if (!bolinhaGlobal) {
+                bolinhaGlobal = document.createElement('span');
+                bolinhaGlobal.classList.add('bolinha-menu-global');
+                bolinhaGlobal.style = `
+                    position: absolute; top: 0px; left: 20px; width: 8px; height: 8px; 
+                    background-color: #ff3b30; border-radius: 50%; display: inline-block;
+                    box-shadow: 0 0 6px #ff3b30; z-index: 10;
+                `;
+                itemMenuMensagens.appendChild(bolinhaGlobal);
+            }
+        } else {
+            if (bolinhaGlobal) bolinhaGlobal.remove();
+        }
     }
 
-    // ==========================================
-    // 3. BUSCAR HISTÓRICO (MANTENDO O PADRÃO 'CONTEUDO')
-    // ==========================================
+    function abrirConversa(artista) {
+        if (chatVazio) chatVazio.style.display = 'none';
+        if (janelaChatAtiva) janelaChatAtiva.style.display = 'flex';
+
+        if (conversaNome) conversaNome.textContent = artista.nome;
+        if (conversaBio) conversaBio.textContent = artista.biografia || '';
+        if (conversaFoto) {
+            conversaFoto.src = artista.foto_perfil || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            conversaFoto.style.display = 'block';
+        }
+
+        if (intervaloMensagens) clearInterval(intervaloMensagens);
+
+        carregarMensagens();
+        carregarContatos(); 
+
+        intervaloMensagens = setInterval(() => {
+            carregarMensagens();
+            carregarContatos(); 
+        }, 3000);
+    }
+
     async function carregarMensagens() {
-        if (!idDestinatarioAtual) return;
+        if (!idConversaAtiva) return;
 
         try {
-            const response = await fetch(`http://localhost:3000/api/mensagens/historico/${idLogado}/${idDestinatarioAtual}`);
+            const response = await fetch(`http://localhost:3000/mensagens/historico/${idLogado}/${idConversaAtiva}`);
+            if (!response.ok) return;
+
             const mensagens = await response.json();
+            if (!chatMensagens) return;
+
+            const estavaNoFinal = chatMensagens.scrollHeight - chatMensagens.scrollTop <= chatMensagens.clientHeight + 100;
 
             chatMensagens.innerHTML = '';
 
             mensagens.forEach(msg => {
-                // Define se a mensagem foi enviada por você ou recebida do outro
-                const ehMinha = msg.id_remetente == idLogado;
-                const tipoClasse = ehMinha ? 'sent' : 'received';
-                
-                // Formata o horário da mensagem
-                const hora = new Date(msg.data_envio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const box = document.createElement('div');
+                box.style = "margin: 8px 0; display: flex;";
 
-                const msgElement = document.createElement('div');
-                msgElement.className = `message ${tipoClasse}`;
-                
-                // IMPORTANTE: Aqui usamos msg.conteudo para combinar com a sua rota!
-                msgElement.innerHTML = `
-                    <div class="bubble">${msg.conteudo}</div>
-                    <span class="timestamp">${hora}</span>
-                `;
-                chatMensagens.appendChild(msgElement);
+                if (msg.id_remetente == idLogado) {
+                    box.style.justifyContent = 'flex-end';
+                    box.innerHTML = `
+                        <div style="background: #007bff; color: white; padding: 10px 14px; border-radius: 15px 15px 0 15px; max-width: 65%; word-wrap: break-word;">
+                            ${msg.conteudo}
+                        </div>`;
+                } else {
+                    box.style.justifyContent = 'flex-start';
+                    box.innerHTML = `
+                        <div style="background: #292929; color: white; padding: 10px 14px; border-radius: 15px 15px 15px 0; max-width: 65%; border: 1px solid #333; word-wrap: break-word;">
+                            ${msg.conteudo}
+                        </div>`;
+                }
+                chatMensagens.appendChild(box);
             });
 
-            // Rola o scroll do chat lá para baixo de forma suave para ver as últimas mensagens
-            chatMensagens.scrollTop = chatMensagens.scrollHeight;
+            if (estavaNoFinal) {
+                chatMensagens.scrollTop = chatMensagens.scrollHeight;
+            }
 
         } catch (error) {
-            console.error('Erro ao buscar histórico de mensagens:', error);
+            console.error("Erro ao puxar histórico:", error);
         }
     }
 
-    // ==========================================
-    // 4. ENVIAR NOVA MENSAGEM
-    // ==========================================
     async function enviarMensagem() {
         const texto = mensagemInput.value.trim();
-        if (!texto || !idDestinatarioAtual) return;
+        if (!texto || !idConversaAtiva) return;
 
         try {
-            const response = await fetch('http://localhost:3000/api/mensagens', {
+            const response = await fetch('http://localhost:3000/mensagens/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                // Enviamos id_remetente, id_destinatario e conteudo exatamente como pede o seu POST
                 body: JSON.stringify({
                     id_remetente: idLogado,
-                    id_destinatario: idDestinatarioAtual,
+                    id_destinatario: idConversaAtiva,
                     conteudo: texto
                 })
             });
 
             if (response.ok) {
-                mensagemInput.value = ''; // Limpa a caixinha de texto
-                carregarMensagens();     // Atualiza a tela de mensagens na hora
-            } else {
-                console.error('Servidor recusou a mensagem');
+                mensagemInput.value = ''; 
+                carregarMensagens();      
             }
         } catch (error) {
-            console.error('Erro ao enviar mensagem para o servidor:', error);
+            console.error("Erro ao enviar mensagem:", error);
         }
     }
 
-    // Escutadores de eventos para o botão Enviar e para a tecla Enter
-    btnEnviar.addEventListener('click', enviarMensagem);
-    mensagemInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            enviarMensagem();
-        }
-    });
+    if (btnEnviarMensagem) {
+        btnEnviarMensagem.addEventListener('click', enviarMensagem);
+    }
 
-    // Inicializa a listagem de artistas ao abrir a página
+    if (mensagemInput) {
+        mensagemInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                enviarMensagem();
+            }
+        });
+    }
+
     carregarContatos();
+
+    if (idConversaAtiva) {
+        fetch(`http://localhost:3000/mensagens/contatos/${idLogado}`)
+            .then(res => res.json())
+            .then(artistas => {
+                const selecionado = artistas ? artistas.find(a => a.id_artista == idConversaAtiva) : null;
+                if (selecionado) {
+                    abrirConversa(selecionado);
+                }
+            }).catch(err => console.error("Erro ao abrir chat automático:", err));
+    }
 });
