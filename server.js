@@ -42,6 +42,15 @@ const categoriasRoutes = require('./routes/categoriasRoutes');
 const midiasPerfilRoutes = require('./routes/midiasPerfilRoutes');
 const favoritosRoutes = require('./routes/favoritosRoutes');
 const authRoutes = require('./routes/authRoutes'); // Rota de favoritos importada
+// Importa o arquivo de rotas passando a conexão do banco de dados (db)
+
+// IMPORTAÇÃO DAS ROTAS DE POSTAGENS
+// Corrigido para "postagensRoutes" de forma a bater certo com o nome do teu arquivo!
+const postagensRoutes = require('./routes/postagensRoutes')(db);
+
+// DEFINIÇÃO DO ENDPOINT BASE
+app.use('/api/postagens', postagensRoutes);
+// Define o caminho (endpoint) base para as postagens
 
 // ==========================================
 // ATIVAÇÃO DAS ROTAS (Uso dos endpoints passando o 'db')
