@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amnesia</title>
-    <link rel="stylesheet" href="/views/css/home.css">
-<script src="/views/js/home.js" defer></script>
-<script src="/views/js/feed.js" defer></script>
+    <title>Amnesia - Pesquisar</title>
+    <link rel="stylesheet" href="/views/css/pesquisar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="/views/js/pesquisar.js" defer></script>
 </head>
 
 <body>
@@ -22,7 +22,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/views/pages/pesquisa.html">
+                    <a href="/views/pages/pesquisar.html" class="active-link">
                         <span>🧭</span> Pesquisar
                     </a>
                 </li>
@@ -45,41 +45,19 @@
         </nav>
 
         <main class="feed-container">
-
-            <section class="create-post-box">
-    <h3>Criar Nova Publicação</h3>
-    <form id="form-novo-post">
-        <textarea id="post-legenda" placeholder="Escreva uma legenda ou título..." required></textarea>
-        
-        <div class="file-input-wrapper">
-            <label for="post-imagem-arquivo" class="btn-arquivo-label">Selecionar Imagem do Computador</label>
-            <input type="file" id="post-imagem-arquivo" accept="image/*" required>
-            <span id="nome-arquivo-selecionado">Nenhum arquivo selecionado</span>
-        </div>
-        
-        <button type="submit" class="btn-enviar">Publicar</button>
-    </form>
-</section>
-
-            <section id="feed-posts">
+            
+            <section class="search-box-wrapper">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Pesquisar por artistas, tags ou estilos...">
+                </div>
             </section>
+
+            <section class="explore-grid">
+                </section>
 
         </main>
     </div>
 
-    <script>
-    // Captura o ID da URL da Home e salva na memória para as outras páginas usarem
-    const urlParams = new URLSearchParams(window.location.search);
-    const idUrl = urlParams.get('id');
-    if (idUrl) {
-        sessionStorage.setItem('idArtistaLogado', idUrl);
-    }
-
-
-    
-</script>
-
-
 </body>
-
 </html>
