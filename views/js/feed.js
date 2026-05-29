@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. CARREGAR E RENDERIZAR TODAS AS POSTAGENS NO FEED (VERSÃO CORRETA COM O BOTÃO)
+    // 3. CARREGAR E RENDERIZAR TODAS AS POSTAGENS NO FEED (VERSÃO ATUALIZADA COM LINK)
     async function carregarFeed() {
         if (!feedContainer) return;
         try {
@@ -85,11 +85,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Verifica se o post atual pertence ao usuário que está logado na sessão
                 const ehDonoDoPost = post.id_artista === parseInt(idArtistaLogado);
 
+                // ATUALIZAÇÃO AQUI: O nome do artista virou um link dinâmico para o perfil público dele
                 postElement.innerHTML = `
                     <div class="post-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <img src="${fotoPerfil}" class="post-avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                            <strong style="color: #fff;">${post.artista_nome}</strong>
+                            
+                            <a href="/views/pages/perfil-publico.html?id=${post.id_artista}" class="link-artista" style="color: #fff; text-decoration: none; font-weight: bold; font-size: 16px; transition: 0.2s;">
+                                ${post.artista_nome}
+                            </a>
                         </div>
                         
                         ${ehDonoDoPost ? `
