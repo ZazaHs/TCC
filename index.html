@@ -1,31 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Amnesia</title>
     <link rel="stylesheet" href="/views/css/index.css" />
-   <script src="/views/js/login.js" defer></script>
+    <script src="/views/js/login.js" defer></script>
   </head>
 
   <body>
        <header>
-        <h1>Amnesia</h1>
+         <h1>Amnesia</h1>
        </header>
        <main>
         <form id="formLogin">
-          <input type="email"  id="loginEmail" placeholder="Email"><br>
-          <input type="password"  id="loginSenha" placeholder="Senha"><br>
+          <input type="email" id="loginEmail" placeholder="Email" required><br>
+          <input type="password" id="loginSenha" placeholder="Senha" required><br>
 
-
-<div id="mensagemErro" style="color: #ff4d4d; font-size: 14px; margin-bottom: 10px; display: none; text-align: center;"></div>
+          <div id="mensagemErro" style="color: #ff4d4d; font-size: 14px; margin-bottom: 10px; display: none; text-align: center;"></div>
 
           <button type="submit">Entrar</button><br>
-            <a href="/views/pages/cadastro.html">Cadastrar-se</a>
+          <a href="/views/pages/cadastro.html">Cadastrar-se</a>
         </form>
        </main>
-    <footer>
-
-    </footer>
   </body>
 </html>
