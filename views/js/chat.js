@@ -1,7 +1,19 @@
-// views/js/chat.js
 document.addEventListener('DOMContentLoaded', () => {
-    const idLogado = sessionStorage.getItem('idArtistaLogado');
-    let idConversaAtiva = sessionStorage.getItem('idConversaAtiva'); 
+    let idLogadoRaw = sessionStorage.getItem('idArtistaLogado');
+    
+    // Filtro sanitário: Corrige na hora se o ID no sessionStorage estiver corrompido com ":"
+    if (idLogadoRaw && idLogadoRaw.includes(':')) {
+        idLogadoRaw = idLogadoRaw.split(':')[0];
+        sessionStorage.setItem('idArtistaLogado', idLogadoRaw);
+    }
+    
+    const idLogado = idLogadoRaw;
+    let idConversaAtiva = sessionStorage.getItem('idConversaAtiva');
+    
+    if (idConversaAtiva && idConversaAtiva.includes(':')) {
+        idConversaAtiva = idConversaAtiva.split(':')[0];
+        sessionStorage.setItem('idConversaAtiva', idConversaAtiva);
+    }
 
     console.log("Chat Inicializado. Meu ID:", idLogado);
     console.log("ID da Conversa ativa:", idConversaAtiva);
@@ -35,14 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
     async function carregarContatos() {
         try {
             const response = await fetch(`http://localhost:3000/mensagens/contatos/${idLogado}`);
-            if (!response.ok) throw new Error("Erro ao buscar contatos");
+            if (!response.ok) throw new Error("Erro ao buscar contatos no servidor");
 
             const artistas = await response.json();
             if (!listaContatos) return;
 
             listaContatos.innerHTML = '';
 
-            if (artistas.length === 0) {
+            if (!artistas || artistas.length === 0) {
                 listaContatos.innerHTML = '<p style="color: #666; font-size: 14px; padding: 10px;">Você não segue nenhum artista.</p>';
                 atualizarBolinhaGlobal(false);
                 return;
@@ -141,11 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (intervaloMensagens) clearInterval(intervaloMensagens);
 
         carregarMensagens();
-        carregarContatos(); 
 
         intervaloMensagens = setInterval(() => {
             carregarMensagens();
-            carregarContatos(); 
         }, 3000);
     }
 
@@ -228,15 +238,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Inicializa carregamento lateral de contatos
     carregarContatos();
 
+    // Loop leve para buscar novas notificações de mensagens a cada 5 segundos
+    setInterval(carregarContatos, 5000);
+
+    // Resgata o chat ativo caso a página sofra um F5 manual
     if (idConversaAtiva) {
         fetch(`http://localhost:3000/mensagens/contatos/${idLogado}`)
             .then(res => res.json())
             .then(artistas => {
-                const selecionado = artistas ? artistas.find(a => a.id_artista == idConversaAtiva) : null;
-                if (selecionado) {
-                    abrirConversa(selecionado);
+                if (artistas && Array.isArray(artistas)) {
+                    const selecionado = artists ? artistas.find(a => a.id_artista == idConversaAtiva) : null;
+                    if (selecionado) {
+                        abrirConversa(selecionado);
+                    }
                 }
             }).catch(err => console.error("Erro ao abrir chat automático:", err));
     }

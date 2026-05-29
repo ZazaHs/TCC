@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Exportamos uma função que recebe o 'db' do seu server.js
+// Exportamos uma função que recebe o 'db' conectado do seu server.js
 module.exports = (db) => {
 
     // ========================================================
@@ -32,9 +32,21 @@ module.exports = (db) => {
     // 2. LISTAR APENAS ARTISTAS QUE O USUÁRIO SEGUE (GET /mensagens/contatos/:idLogado)
     // ========================================================
     router.get('/contatos/:idLogado', (req, res) => {
-        const idLogado = req.params.idLogado;
+        let rawId = req.params.idLogado;
+        
+        // Proteção contra parâmetros duplicados ou sujos (ex: "1:1")
+        if (typeof rawId === 'string' && rawId.includes(':')) {
+            rawId = rawId.split(':')[0];
+        }
 
-        // Query perfeita baseada nas tabelas reais do seu MySQL Workbench (id_seguidor e id_seguido)
+        const idLogado = parseInt(rawId, 10);
+
+        if (isNaN(idLogado)) {
+            console.error("ID enviado é inválido:", req.params.idLogado);
+            return res.status(400).json({ error: "ID de usuário inválido." });
+        }
+
+        // Query estruturada baseada no relacionamento id_seguidor e id_seguido das tabelas reais
         const query = `
             SELECT 
                 a.id_artista, 
@@ -56,8 +68,8 @@ module.exports = (db) => {
 
         db.query(query, [idLogado, idLogado, idLogado], (err, results) => {
             if (err) {
-                console.error("Erro ao buscar contatos no banco:", err);
-                return res.status(500).json({ error: "Erro ao buscar lista de contatos." });
+                console.error("Erro interno no MySQL ao buscar contatos:", err.message);
+                return res.status(500).json({ error: "Erro interno no banco de dados." });
             }
             res.json(results);
         });
@@ -67,7 +79,11 @@ module.exports = (db) => {
     // 3. HISTÓRICO DE MENSAGENS (GET /mensagens/historico/:remetente/:destinatario)
     // ========================================================
     router.get('/historico/:remetente/:destinatario', (req, res) => {
-        const { remetente, destinatario } = req.params;
+        let { remetente, destinatario } = req.params;
+
+        // Higienização preventiva nos parâmetros de histórico
+        if (remetente.includes(':')) remetente = remetente.split(':')[0];
+        if (destinatario.includes(':')) destinatario = destinatario.split(':')[0];
 
         const queryUpdate = `
             UPDATE mensagens 
