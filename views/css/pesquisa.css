@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
+
+body {
+    background-color: black;
+    font-family: 'Pompiere', cursive;
+}
+
+/* RESET BÁSICO DO SEU TCC */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pompiere', cursive;
+}
+
+.container {
+    display: flex; /* Cria as colunas principais */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 1. SIDEBAR ESQUERDA (ESTILO EXATO DO SEU TCC) */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    padding: 20px;
+    border-right: 1px solid #dbdbdb;
+    position: sticky;
+    top: 0;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: white;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: gray;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.nav-links li {
+    list-style: none;
+    padding: 12px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+/* Efeito Hover do TCC */
+.nav-links li:hover {
+    background-color: #f2f2f2;
+}
+
+/* Classe para destacar qual página está ativa (Pesquisar) */
+.nav-links .active-link {
+    color: white;
+    font-weight: bold;
+}
+
+/* 2. CONTEÚDO CENTRAL (ESTILO EXATO DO SEU TCC) */
+.feed-container {
+    flex: 1;
+    max-width: 630px;
+    padding: 30px 50px;
+}
+
+/* --- ELEMENTOS EXCLUSIVOS DA TELA DE PESQUISA --- */
+
+/* Caixa envolvente da barra de pesquisa */
+.search-box-wrapper {
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    position: relative;
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8e8e8e;
+    font-size: 16px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+    background-color: #fafafa;
+    color: black;
+}
+
+.search-bar input:focus {
+    background-color: #fff;
+    border-color: #a8a8a8;
+}
+
+/* Grade de Fotos Estilo Explorar do Instagram */
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 150px; /* Altura de cada bloco */
+    gap: 10px;
+}
+
+/* Item padrão da Grade */
+.grid-item {
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+/* Foto vertical longa que ocupa 2 linhas */
+.grid-item.tall {
+    grid-row: span 2;
+}
+
+.grid-item:hover {
+    transform: scale(1.02);
+}
+
+/* Ajuste essencial para as imagens preencherem os blocos perfeitamente */
+.art-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz o corte proporcional estilo feed do Instagram */
+    display: block;
+    cursor: pointer;
+}
