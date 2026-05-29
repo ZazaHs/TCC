@@ -14,12 +14,13 @@ body {
 }
 
 .container {
-    display: flex; /* Cria as colunas principais */
-    max-width: 1200px;
-    margin: 0 auto;
+    display: flex;
+    width: 100%; /* Garante o uso total da tela */
+    max-width: 100vw; /* Remove o limite de 1200px para expandir até a borda direita */
+    margin: 0;
 }
 
-/* 1. SIDEBAR ESQUERDA (ESTILO EXATO DO SEU TCC) */
+/* 1. SIDEBAR ESQUERDA (MANTIDA IDÊNTICA AO SEU TCC) */
 .sidebar {
     width: 250px;
     height: 100vh;
@@ -27,6 +28,7 @@ body {
     border-right: 1px solid #dbdbdb;
     position: sticky;
     top: 0;
+    flex-shrink: 0; /* Impede a sidebar de esmagar quando a tela diminuir */
 }
 
 .logo {
@@ -54,33 +56,33 @@ body {
     transition: background 0.2s ease;
 }
 
-/* Efeito Hover do TCC */
 .nav-links li:hover {
     background-color: #f2f2f2;
 }
 
-/* Classe para destacar qual página está ativa (Pesquisar) */
 .nav-links .active-link {
     color: white;
     font-weight: bold;
 }
 
-/* 2. CONTEÚDO CENTRAL (ESTILO EXATO DO SEU TCC) */
-.feed-container {
-    flex: 1;
-    max-width: 630px;
-    padding: 30px 50px;
+/* 2. NOVO CONTEÚDO CENTRAL EXPANDIDO (Preenche todo o resto da tela) */
+.feed-container-full {
+    flex: 1; /* Ocupa 100% do espaço restante à direita */
+    padding: 30px; /* Mantém um respiro elegante nas bordas */
+    height: 100vh;
+    overflow-y: auto; /* Permite rolar a página para ver mais imagens */
 }
 
-/* --- ELEMENTOS EXCLUSIVOS DA TELA DE PESQUISA --- */
+/* --- ELEMENTOS DA TELA DE PESQUISA EM TELA CHEIA --- */
 
-/* Caixa envolvente da barra de pesquisa */
+/* Caixa envolvente da barra de pesquisa expandida */
 .search-box-wrapper {
     background: white;
     border: 1px solid #dbdbdb;
     border-radius: 8px;
     padding: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    width: 100%; /* Ocupa toda a largura da área */
 }
 
 .search-bar {
@@ -99,7 +101,7 @@ body {
 
 .search-bar input {
     width: 100%;
-    padding: 10px 10px 10px 40px;
+    padding: 12px 12px 12px 45px;
     border: 1px solid #dbdbdb;
     border-radius: 6px;
     font-size: 16px;
@@ -113,12 +115,13 @@ body {
     border-color: #a8a8a8;
 }
 
-/* Grade de Fotos Estilo Explorar do Instagram */
+/* Grade de Fotos Expandida (Aumentado para 4 colunas para cobrir o espaço vazio) */
 .explore-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 150px; /* Altura de cada bloco */
-    gap: 10px;
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas iguais ocupando toda a largura */
+    grid-auto-rows: 180px; /* Altura um pouco maior para valorizar as fotos na tela cheia */
+    gap: 15px; /* Espaçamento entre as artes */
+    width: 100%;
 }
 
 /* Item padrão da Grade */
@@ -130,7 +133,7 @@ body {
     transition: transform 0.2s;
 }
 
-/* Foto vertical longa que ocupa 2 linhas */
+/* Foto vertical longa que ocupa 2 linhas de altura */
 .grid-item.tall {
     grid-row: span 2;
 }
@@ -139,11 +142,11 @@ body {
     transform: scale(1.02);
 }
 
-/* Ajuste essencial para as imagens preencherem os blocos perfeitamente */
+/* Ajuste das imagens */
 .art-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Faz o corte proporcional estilo feed do Instagram */
+    object-fit: cover; 
     display: block;
     cursor: pointer;
 }
