@@ -41,7 +41,7 @@
             </header>
 
             <section class="chat-window" id="chat-mensagens">
-                </section>
+            </section>
 
             <footer class="input-area">
                 <button class="action-btn">+</button>
@@ -55,8 +55,10 @@
         </div>
     </div>
 
-    //Sempre que o usuário voltar para a Home, limpa a conversa ativa da memória
-sessionStorage.removeItem('idConversaAtiva');
-
+    <script>
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.removeItem('idConversaAtiva');
+        });
+    </script>
 </body>
 </html>

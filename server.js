@@ -63,9 +63,9 @@ app.use('/avaliacoes', avaliacoesRoutes(db));
 app.use('/commissions', commissionsRoutes(db));
 
 
-block: {
+
     app.use('/mensagens', mensagensRoutes(db));
-}
+
 
 app.use('/categorias', categoriasRoutes(db));
 app.use('/midias-perfil', midiasPerfilRoutes(db));

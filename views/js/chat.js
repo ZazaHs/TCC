@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let intervaloMensagens = null; 
 
-    if (!idLogado) {
+    if (!idLogado || idLogado === "null" || idLogado === "undefined") {
         alert("Por favor, faça login para acessar suas mensagens.");
         window.location.href = "/index.html";
         return;
@@ -47,13 +47,19 @@ document.addEventListener('DOMContentLoaded', () => {
     async function carregarContatos() {
         try {
             const response = await fetch(`http://localhost:3000/mensagens/contatos/${idLogado}`);
-            if (!response.ok) throw new Error("Erro ao buscar contatos no servidor");
+            
+            if (!response.ok) {
+                // Isso vai nos dizer no console se o erro é 400, 404 ou 500
+                console.error(`O servidor respondeu com status de erro: ${response.status}`);
+                throw new Error(`Erro ${response.status} ao buscar contatos no servidor`);
+            }
 
             const artistas = await response.json();
             if (!listaContatos) return;
 
             listaContatos.innerHTML = '';
 
+            // CORRIGIDO: Alterado de artists.length para artistas.length
             if (!artistas || artistas.length === 0) {
                 listaContatos.innerHTML = '<p style="color: #666; font-size: 14px; padding: 10px;">Você não segue nenhum artista.</p>';
                 atualizarBolinhaGlobal(false);
@@ -112,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             atualizarBolinhaGlobal(temMensagemNaoLidaGeral);
 
         } catch (error) {
-            console.error("Erro ao carregar lista de contatos:", error);
+            console.error("Erro detalhado ao carregar lista de contatos:", error);
             if (listaContatos) {
                 listaContatos.innerHTML = '<p style="color: #ff3b30; font-size: 14px; padding: 10px;">Erro ao carregar contatos.</p>';
             }
@@ -244,13 +250,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Loop leve para buscar novas notificações de mensagens a cada 5 segundos
     setInterval(carregarContatos, 5000);
 
-    // Resgata o chat ativo caso a página sofra um F5 manual
+    // Resgata o chat ativo caso a página sofro um F5 manual
     if (idConversaAtiva) {
         fetch(`http://localhost:3000/mensagens/contatos/${idLogado}`)
             .then(res => res.json())
             .then(artistas => {
                 if (artistas && Array.isArray(artistas)) {
-                    const selecionado = artists ? artistas.find(a => a.id_artista == idConversaAtiva) : null;
+                    const selecionado = artistas.find(a => a.id_artista == idConversaAtiva);
                     if (selecionado) {
                         abrirConversa(selecionado);
                     }
