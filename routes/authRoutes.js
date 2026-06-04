@@ -25,13 +25,13 @@ module.exports = (db) => {
             }
 
             if (results.length === 0) {
-                return res.status(401).json({ error: 'Usuario ou senha incorretos.' });
+                return res.status(401).json({ error: 'Usuário ou senha incorretos.' });
             }
 
             const artista = results[0];
 
             if (senha.trim() !== artista.senha.trim()) {
-                return res.status(401).json({ error: 'Usuario ou senha incorretos.' });
+                return res.status(401).json({ error: 'Usuário ou senha incorretos.' });
             }
 
             res.json({
@@ -86,48 +86,47 @@ module.exports = (db) => {
     });
 
     // =======================================================
-    // 3. NOVA ROTA: BUSCAR DADOS DO PERFIL (GET /auth/perfil/:id)
+    // 3. BUSCAR DADOS DO PERFIL (GET /auth/perfil/:id)
     // =======================================================
-router.get('/perfil/:id', (req, res) => {
-    const idArtista = req.params.id;
-    // Garanta que o foto_perfil esteja no SELECT
-    const query = "SELECT id_artista, nome, email, biografia, foto_perfil FROM artistas WHERE id_artista = ?";
+    router.get('/perfil/:id', (req, res) => {
+        const idArtista = req.params.id;
+        const query = "SELECT id_artista, nome, email, biografia, foto_perfil FROM artistas WHERE id_artista = ?";
 
-    db.query(query, [idArtista], (err, results) => {
-        if (err) return res.status(500).json({ error: "Erro no banco" });
-        if (results.length === 0) return res.status(404).json({ error: "Não encontrado" });
-        
-        res.json(results[0]);
+        db.query(query, [idArtista], (err, results) => {
+            if (err) {
+                console.error("Erro ao buscar perfil:", err);
+                return res.status(500).json({ error: "Erro no banco de dados" });
+            }
+            if (results.length === 0) {
+                return res.status(404).json({ error: "Artista não encontrado" });
+            }
+            
+            res.json(results[0]);
+        });
     });
-});
 
     // =======================================================
-    // 4. NOVA ROTA: SALVAR ALTERAÇÕES (PUT /auth/atualizar-perfil)
+    // 4. SALVAR ALTERAÇÕES (PUT /auth/atualizar-perfil)
     // =======================================================
-  
+    router.put('/atualizar-perfil', (req, res) => {
+        const { id, nome, biografia, foto_perfil } = req.body;
 
-    // Exemplo de como deve ficar a sua rota PUT no Node.js
-router.put('/atualizar-perfil', (req, res) => {
-    const { id, nome, biografia, foto_perfil } = req.body;
+        let query = "UPDATE artistas SET nome = ?, biografia = ? WHERE id_artista = ?";
+        let dados = [nome, biografia, id];
 
-    // Se o front-end enviou uma nova foto, atualiza tudo. Se não enviou, mantém a antiga.
-    let query = "UPDATE artistas SET nome = ?, biografia = ? WHERE id_artista = ?";
-    let dados = [nome, biografia, id];
-
-    if (foto_perfil) {
-        query = "UPDATE artistas SET nome = ?, biografia = ?, foto_perfil = ? WHERE id_artista = ?";
-        dados = [nome, biografia, foto_perfil, id];
-    }
-
-    db.query(query, dados, (err, result) => {
-        if (err) {
-            console.error("Erro ao atualizar perfil no MySQL:", err);
-            return res.status(500).json({ error: "Erro ao salvar no banco de dados." });
+        if (foto_perfil) {
+            query = "UPDATE artistas SET nome = ?, biografia = ?, foto_perfil = ? WHERE id_artista = ?";
+            dados = [nome, biografia, foto_perfil, id];
         }
-        res.json({ message: "Perfil atualizado com sucesso!" });
+
+        db.query(query, dados, (err, result) => {
+            if (err) {
+                console.error("Erro ao atualizar perfil no MySQL:", err);
+                return res.status(500).json({ error: "Erro ao salvar no banco de dados." });
+            }
+            res.json({ message: "Perfil updated com sucesso!" });
+        });
     });
-});
-    
 
     return router;
 };

@@ -1,9 +1,51 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
     const form = document.getElementById('form-novo-post');
     const feedContainer = document.getElementById('feed-posts');
     const inputArquivo = document.getElementById('post-imagem-arquivo');
     const textoNomeArquivo = document.getElementById('nome-arquivo-selecionado');
+
+    // =======================================================
+    // BLINDAGEM DE ID E ATUALIZAÇÃO DA SIDEBAR (GERENCIAMENTO DE SESSÃO)
+    // =======================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    let idArtista = urlParams.get('id');
+
+    // Varre a sessão se não encontrar na URL
+    if (!idArtista || idArtista === 'undefined' || idArtista === 'null') {
+        idArtista = sessionStorage.getItem('idArtistaLogado') || 
+                    sessionStorage.getItem('id_artista') || 
+                    sessionStorage.getItem('idUsuario');
+    }
+
+    console.log("🏠 Home ativa gerenciando o Artista ID:", idArtista);
+
+    if (idArtista) {
+        // Salva de volta na sessão para garantir persistência
+        sessionStorage.setItem('id_artista', idArtista);
+
+        // Ajusta a barra de endereços para manter o visual limpo (?id=X)
+        window.history.replaceState(null, '', `home.html?id=${idArtista}`);
+
+        // Injeta o ID atualizado em todos os links da Sidebar dinamicamente ao carregar a página
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            const hrefOriginal = link.getAttribute('href');
+            if (hrefOriginal && !hrefOriginal.includes('?id=')) {
+                link.href = `${hrefOriginal}?id=${idArtista}`;
+            }
+        });
+    }
+
+    // Tenta recuperar os dados completos salvos no localStorage para usar o nome real do artista
+    let nomeUsuarioLogado = "seu_usuario";
+    const dadosLocais = localStorage.getItem('usuarioLogado');
+    if (dadosLocais) {
+        try {
+            const usuarioObj = JSON.parse(dadosLocales);
+            nomeUsuarioLogado = usuarioObj.nome || usuarioObj.username || "artista";
+        } catch (e) {
+            console.error("Erro ao ler dados do localStorage", e);
+        }
+    }
 
     if (!form || !feedContainer) return;
 
@@ -16,13 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // EVENTO PRINCIPAL: Envio do Formulário
+    // EVENTO PRINCIPAL: Envio do Formulário (Post)
     form.addEventListener('submit', function(event) {
         event.preventDefault();
 
         const legendaTexto = document.getElementById('post-legenda').value;
-        
-        // Pega o arquivo real selecionado pelo usuário
         const arquivo = inputArquivo.files[0];
 
         if (!arquivo) {
@@ -30,12 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Criando o leitor de arquivos do JavaScript
         const leitor = new FileReader();
 
-        // Essa função roda ASSIM QUE o JavaScript terminar de ler o arquivo do seu PC
         leitor.onload = function(e) {
-            const urlImagemConvertida = e.target.result; // Aqui está a imagem convertida em texto/Base64
+            const urlImagemConvertida = e.target.result; // Imagem convertida em Base64
 
             const novoPostElemento = document.createElement('article');
             novoPostElemento.classList.add('post');
@@ -43,12 +81,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let totalLikes = 0;
             let jaCurtiu = false;
 
-            // Monta a estrutura usando a imagem convertida localmente
+            // Substituído o 'seu_usuario' estático pela variável 'nomeUsuarioLogado' real
             novoPostElemento.innerHTML = `
                 <header class="post-header">
                     <div class="user-info">
                         <div class="avatar-small"></div>
-                        <strong>seu_usuario</strong>
+                        <strong>${nomeUsuarioLogado}</strong>
                     </div>
                     <button class="btn-deletar" title="Excluir publicação">&times;</button>
                 </header>
@@ -69,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
 
                 <div class="post-content">
-                    <p><strong>seu_usuario</strong> ${legendaTexto}</p>
+                    <p><strong>${nomeUsuarioLogado}</strong> ${legendaTexto}</p>
                 </div>
 
                 <div class="comments-section">
@@ -81,18 +119,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // ==========================================
             // LÓGICA DE EXCLUIR O POST
-            // ==========================================
             const botaoDeletar = novoPostElemento.querySelector('.btn-deletar');
             botaoDeletar.addEventListener('click', () => {
                 const confirmar = confirm("Tem certeza que deseja excluir esta publicação?");
                 if (confirmar) novoPostElemento.remove();
             });
 
-            // ==========================================
             // LÓGICA DO LIKE 
-            // ==========================================
             const botaoLike = novoPostElemento.querySelector('.like-btn');
             const iconeCoracao = novoPostElemento.querySelector('.icone-coracao');
             const displayLikes = novoPostElemento.querySelector('.numero-likes');
@@ -112,9 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayLikes.textContent = totalLikes.toLocaleString('pt-BR');
             });
 
-            // ==========================================
             // LÓGICA DOS COMENTÁRIOS
-            // ==========================================
             const formComentario = novoPostElemento.querySelector('.comment-form');
             const inputComentario = novoPostElemento.querySelector('.comment-input');
             const listaComentarios = novoPostElemento.querySelector('.comments-list');
@@ -140,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
             textoNomeArquivo.textContent = "Nenhum arquivo selecionado";
         };
 
-        // Comando que inicia a leitura do arquivo de imagem do computador
         leitor.readAsDataURL(arquivo);
     });
 });

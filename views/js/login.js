@@ -2,10 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formLogin');
     const erroContainer = document.getElementById('mensagemErro');
 
+    if (!form) return;
+
     form.addEventListener('submit', async (event) => {
         event.preventDefault(); // Impede o recarregamento da página
-
-        erroContainer.style.display = 'none';
+        if (erroContainer) erroContainer.style.display = 'none';
 
         const email = document.getElementById('loginEmail').value;
         const senha = document.getElementById('loginSenha').value;
@@ -20,25 +21,35 @@ document.addEventListener('DOMContentLoaded', () => {
             const resultado = await resposta.json();
 
             if (resposta.ok) {
-                // --- CORREÇÃO AQUI para reconhecer o artista ---
-                // Tenta pegar 'id_artista' ou 'id'. Assim não dá erro independente de como o banco retorne!
+                // Extrai com segurança o ID do artista independente de vir como id_artista ou id
                 const idArtista = resultado.user.id_artista || resultado.user.id; 
 
-                // 2. Salva os dados completos no LocalStorage para segurança/uso interno
+                // 1. SALVA NA SESSÃO: Alimenta todas as variáveis usadas pelas outras páginas do site
+                sessionStorage.setItem('idArtistaLogado', idArtista);
+                sessionStorage.setItem('id_artista', idArtista);
+                sessionStorage.setItem('idUsuario', idArtista);
+
+                // 2. Salva os dados completos no LocalStorage como você já fazia
                 localStorage.setItem('usuarioLogado', JSON.stringify(resultado.user));
                 
-                // 3. REDIRECIONAMENTO POR ID: Envia para o perfil passando o ID na URL
+                console.log("Sessão iniciada com sucesso para o ID:", idArtista);
+
+                // 3. REDIRECIONAMENTO: Envia para a home passando o ID na URL
                 window.location.href = `/views/pages/home.html?id=${idArtista}`; 
 
             } else {
-                erroContainer.innerText = resultado.error || 'Erro ao realizar login.';
-                erroContainer.style.display = 'block';
+                if (erroContainer) {
+                    erroContainer.innerText = resultado.error || 'Erro ao realizar login.';
+                    erroContainer.style.display = 'block';
+                }
             }
 
         } catch (error) {
-            console.error('Erro:', error);
-            erroContainer.innerText = 'Não foi possível conectar ao servidor.';
-            erroContainer.style.display = 'block';
+            console.error('Erro crítico no Login:', error);
+            if (erroContainer) {
+                erroContainer.innerText = 'Não foi possível conectar ao servidor.';
+                erroContainer.style.display = 'block';
+            }
         }
     });
 });

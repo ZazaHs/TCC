@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
 
-body{
-  background-color: black;
-  font-family: 'Pompiere', cursive;
-  color: white;
-}
 /* RESET BÁSICO */
 * {
     margin: 0;
@@ -13,91 +8,117 @@ body{
     font-family: 'Pompiere', cursive;
 }
 
-/* Sidebar (Consistente com as outras páginas) */
-.container {
-    display: flex; /* Cria as 3 colunas principais */
-    max-width: 1200px;
-    margin: 0 auto;
+body {
+    background-color: #121212;
+    color: white;
+    overflow-x: hidden;
 }
 
-/* 1. SIDEBAR ESQUERDA */
+/* CONTAINER PRINCIPAL */
+.container {
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+}
+
+/* 1. SIDEBAR ESQUERDA (FIXA) */
 .sidebar {
     width: 250px;
     height: 100vh;
     padding: 20px;
-    border-right: 1px solid #dbdbdb;
+    border-right: 1px solid #222;
     position: sticky;
     top: 0;
-}
-/* Cor cinza para o botão Sair no rodapé da sidebar */
-.nav-footer a {
-    color: #666;
-    text-decoration: none;
-    font-size: 1.3rem;
-    transition: 0.3s;
-}
-
-.nav-footer a:hover {
-    color: #fff; /* Fica branco quando passa o mouse */
+    background-color: #121212;
+    display: flex;
+    flex-direction: column;
 }
 
 .logo {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
     margin-bottom: 40px;
+    color: #fff;
+    letter-spacing: 2px;
 }
 
-/* Remove a estilização padrão dos links dentro da nav-links */
-.nav-links a {
-    text-decoration: none; /* Remove o sublinhado */
-    color: gray;        /* Deixa o texto preto (ou a cor que preferir) */
-    display: flex;         /* Garante que o link ocupe todo o espaço do item */
-    align-items: center;
-    gap: 10px;             /* Espaço entre o ícone e o texto */
-    width: 100%;
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .nav-links li {
     list-style: none;
-    padding: 12px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 8px;    /* Deixa os cantos arredondados no efeito de passar o mouse */
+    border-radius: 8px;    
     transition: background 0.2s ease;
 }
 
-/* Efeito visual opcional: destaca o item quando o usuário passa o mouse por cima */
-.nav-links li:hover {
-    background-color: #f2f2f2; 
+.nav-links a {
+    text-decoration: none; 
+    color: #888;        
+    display: flex;         
+    align-items: center;
+    gap: 15px;             
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1.3rem;
+    transition: color 0.2s;
 }
 
-/* Container Principal */
+.nav-links li:hover {
+    background-color: #1a1a1a; 
+}
+
+.nav-links li:hover a {
+    color: #fff;
+}
+
+.nav-links li a.link-meu-perfil {
+    color: #fff;
+    font-weight: bold;
+}
+
+/* 2. ÁREA DE CONTEÚDO PRINCIPAL (COM ROLAGEM UNIFICADA) */
 .chat-container {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    background: #121212;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .chat-header {
-    padding: 20px 40px;
+    padding: 30px 40px;
     background-color: #161616;
-    border-bottom: 1px solid #2a2a2a;
+    border-bottom: 1px solid #222;
 }
 
-/* Conteúdo de Edição de Perfil */
+.chat-header h2 {
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+}
+
+.chat-header p {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* SEÇÃO DO PERFIL */
 .profile-content {
-    flex-grow: 1;
     padding: 40px;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centraliza o formulário */
+    align-items: center; 
     gap: 40px;
+    width: 100%;
 }
 
-/* Estilo da Foto */
 .photo-section {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .profile-photo-container {
@@ -110,35 +131,31 @@ body{
 .photo-placeholder {
     width: 150px;
     height: 150px;
-    background-color: #333;
+    background-color: #1a1a1a;
     border-radius: 50%;
-    border: 2px solid #fff; /* Detalhe em Branco */
+    border: 2px dashed #333; 
+    background-position: center;
+    background-size: cover;
 }
 
 .change-photo-btn {
     background: none;
-    border: 1px solid #fff;
-    color: #fff;
-    font-family: 'Pompiere', cursive;
+    border: 1px solid #333;
+    color: #aaa;
     font-size: 1.2rem;
-    padding: 5px 15px;
+    padding: 6px 20px;
     border-radius: 20px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s;
 }
 
 .change-photo-btn:hover {
     background-color: #fff;
     color: #000;
+    border-color: #fff;
 }
 
-.photo-hint {
-    margin-top: 10px;
-    font-size: 1rem;
-    color: #666;
-}
-
-/* Campos de Texto */
+/* FORMULÁRIO */
 .edit-form {
     width: 100%;
     max-width: 600px;
@@ -155,58 +172,73 @@ body{
 
 .input-group label {
     font-size: 1.4rem;
-    color: #fff;
+    color: #aaa;
 }
 
-.input-group input, .input-group textarea {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
+.input-group input, 
+.input-group textarea {
+    background-color: #161616;
+    border: 1px solid #222;
     border-radius: 8px;
-    padding: 12px;
+    padding: 14px;
     color: #fff;
-    font-family: 'Pompiere', cursive;
     font-size: 1.4rem;
     outline: none;
-    transition: border 0.3s;
+    transition: all 0.3s;
 }
 
-.input-group input:focus, .input-group textarea:focus {
-    border-color: #fff; /* Foco em Branco */
+.input-group input:focus, 
+.input-group textarea:focus {
+    border-color: #007bff;
+    background-color: #1a1a1a;
 }
 
 .input-group textarea {
-    height: 150px;
+    height: 120px;
     resize: none;
 }
 
-.char-count {
-    font-size: 0.9rem;
-    color: #555;
-    text-align: right;
-}
-
-/* Rodapé e Botão Salvar */
 .input-area {
-    padding: 30px 40px;
-    background-color: #161616;
+    padding: 10px 0;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .save-btn {
-    background-color: #ffffff; /* Botão em Branco */
+    background-color: #ffffff; 
     color: #000;
     border: none;
-    padding: 12px 60px;
+    padding: 10px 40px;
     border-radius: 30px;
-    font-family: 'Pompiere', cursive;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.2s ease;
 }
 
 .save-btn:hover {
     background-color: #e0e0e0;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+}
+
+/* FEED E LIXEIRA */
+.minhas-postagens-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+#grid-meu-feed div:hover {
+    transform: translateY(-4px);
+    border-color: #444 !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+.btn-deletar-post:hover {
+    background: #ff1a1a !important;
+    transform: scale(1.15) !important;
+}
+
+.modal-close:hover {
+    color: #ff4a4a !important;
 }
