@@ -91,21 +91,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // =======================================================
-    // 3. CARREGA AS PUBLICAÇÕES (FEED COM OPÇÃO DE APAGAR)
+    // 3. CARREGA AS PUBLICAÇÕES (SINCRONIZADO COM 'id_post')
     // =======================================================
     async function carregarPostagensDoArtista() {
         try {
-            const resposta = await fetch(`http://localhost:3000/artistas/postagens/artista/${idArtista}`);
-            const textoBruto = await resposta.text();
+            if (!gridMeuFeed) return;
+            gridMeuFeed.innerHTML = '<p style="color: #888; grid-column: 1/-1;">Carregando publicações...</p>';
+
+            let urlFinal = `http://localhost:3000/api/postagens/artista/${idArtista}`;
+            
+            console.log(`📡 Buscando publicações em: ${urlFinal}`);
+            let resposta = await fetch(urlFinal);
+            let textoBruto = await resposta.text();
+
+            if (!resposta.ok || textoBruto.trim().startsWith("<!DOCTYPE html>")) {
+                console.warn("⚠️ Rota principal não retornou JSON. Testando rotas alternativas...");
+                urlFinal = `http://localhost:3000/api/postagens/${idArtista}`;
+                resposta = await fetch(urlFinal);
+                textoBruto = await resposta.text();
+            }
 
             if (textoBruto.trim().startsWith("<!DOCTYPE html>") || !resposta.ok) {
-                throw new Error("A rota de postagens retornou HTML ou caiu no erro do servidor.");
+                throw new Error("Nenhum endpoint de postagens retornou dados válidos em JSON.");
             }
             
             const posts = JSON.parse(textoBruto);
-            console.log("🖼️ Postagens recebidas para o feed:", posts);
+            console.log("🖼️ Postagens retornadas pelo MySQL:", posts);
 
-            if (!gridMeuFeed) return;
             gridMeuFeed.innerHTML = '';
 
             if (!posts || !Array.isArray(posts) || posts.length === 0) {
@@ -119,7 +131,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 const urlImagem = post.imagem_post || post.imagem || post.midia || 'https://placehold.co/600x400/222/fff?text=Sem+Imagem';
                 const textoLegenda = post.legenda || post.descricao || 'Sem legenda';
-                const idPostagem = post.id_postagem || post.id_post || post.id;
+                
+                // 🔑 MAPEAMENTO DIRETAMENTE PARA A COLUNA REAL: id_post
+                const idPostagem = post.id_post || post.id || post.id_postagem;
 
                 card.innerHTML = `
                     <div class="btn-deletar-post" data-id="${idPostagem}" style="position: absolute; top: 18px; right: 18px; background: rgba(255, 74, 74, 0.9); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; z-index: 10;">
@@ -131,29 +145,47 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 card.querySelector('.card-clicavel').addEventListener('click', () => abrirModalImagem(urlImagem));
 
-                // Ação de Deletar com Mensagem de Certificação
                 const btnDeletar = card.querySelector('.btn-deletar-post');
                 btnDeletar.addEventListener('click', async (e) => {
-                    e.stopPropagation();
+                    e.stopPropagation(); 
 
                     const certeza = confirm("Tem certeza absoluta de que deseja apagar esta publicação artística? Esta ação não poderá ser desfeita.");
                     
                     if (certeza) {
-                        try {
-                            const resposta = await fetch(`http://localhost:3000/artistas/postagens/${idPostagem}`, {
-                                method: 'DELETE'
-                            });
+                        const tentativasDelete = [
+                            { url: `http://localhost:3000/api/postagens/${idPostagem}`, options: { method: 'DELETE' } },
+                            { url: `http://localhost:3000/api/postagens/deletar/${idPostagem}`, options: { method: 'DELETE' } },
+                            { url: `http://localhost:3000/api/postagens`, options: { 
+                                method: 'DELETE', 
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id_post: idPostagem, id: idPostagem }) 
+                            }}
+                        ];
 
-                            if (resposta.ok) {
-                                alert("Publicação removida com sucesso!");
-                                card.remove(); 
-                            } else {
-                                const erroDados = await resposta.json();
-                                alert("Erro ao deletar: " + (erroDados.error || "Tente novamente."));
+                        let deletadoComSucesso = false;
+
+                        for (const tentativa of tentativasDelete) {
+                            try {
+                                console.log(`🗑️ Enviando ID ${idPostagem} para: ${tentativa.url}`);
+                                const respostaDelete = await fetch(tentativa.url, tentativa.options);
+                                
+                                if (respostaDelete.ok) {
+                                    const textoResp = await respostaDelete.text();
+                                    if (!textoResp.trim().startsWith("<!DOCTYPE html>")) {
+                                        deletadoComSucesso = true;
+                                        break;
+                                    }
+                                }
+                            } catch (err) {
+                                console.warn("⚠️ Falha na tentativa de exclusão.", err);
                             }
-                        } catch (error) {
-                            console.error("Erro na requisição DELETE:", error);
-                            alert("Não foi possível conectar ao servidor.");
+                        }
+
+                        if (deletadoComSucesso) {
+                            alert("Publicação removida com sucesso!");
+                            card.remove(); 
+                        } else {
+                            alert("Não foi possível apagar a postagem. Verifique se o backend está usando a coluna 'id_post' no DELETE.");
                         }
                     }
                 });
@@ -163,10 +195,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         } catch (error) {
             console.error("❌ Erro ao renderizar as postagens:", error);
-            if (gridMeuFeed) gridMeuFeed.innerHTML = '<p style="color: #666; grid-column: 1/-1;">Não foi possível buscar as publicações no momento.</p>';
+            if (gridMeuFeed) gridMeuFeed.innerHTML = '<p style="color: #ff4a4a; grid-column: 1/-1;">Erro de sincronização com as colunas do banco de dados.</p>';
         }
     }
 
+    // =======================================================
+    // MODAL E EVENTOS ADICIONAIS
+    // =======================================================
     function abrirModalImagem(url) {
         const modal = document.getElementById('image-modal');
         const modalImg = document.getElementById('modal-img');
@@ -233,7 +268,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // GATILHOS DE INICIALIZAÇÃO AUTOMÁTICA
     await carregarDadosPerfil();
     await carregarPostagensDoArtista();
 });
