@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputArquivo = document.getElementById('post-imagem-arquivo');
     const textoNomeArquivo = document.getElementById('nome-arquivo-selecionado');
 
+    // 🛡️ TRAVA DE SEGURANÇA GLOBAL CONTRA DUPLICAÇÃO
+    let enviandoPost = false;
+
     // =======================================================
     // GERENCIAMENTO DE SESSÃO
     // =======================================================
@@ -65,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const novoPostElemento = document.createElement('article');
                 novoPostElemento.classList.add('post');
 
-                // Define visual inicial baseado se o usuário já curtiu no banco
                 const coracaoInicial = post.usuario_ja_curtiu === 1 ? '❤️' : '🤍';
                 const classeCurtido = post.usuario_ja_curtiu === 1 ? 'curtido' : '';
 
@@ -106,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
 
-                // Configura interações assíncronas passando o ID real do post
                 configurarInteracoesDoCard(novoPostElemento, post.id_post);
 
                 novoPostElemento.querySelector('.user-info').addEventListener('click', () => {
@@ -134,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputComentario = elementoPost.querySelector('.comment-input');
         const listaComentarios = elementoPost.querySelector('.comments-list');
 
-        // --- 1. BUSCAR COMENTÁRIOS JÁ EXISTENTES DO BANCO ---
         if (idPost) {
             try {
                 const resComments = await fetch(`http://localhost:3000/api/postagens/${idPost}/comentarios`);
@@ -152,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // --- 2. LOGICA EVENTO DE LIKE ASSÍNCRONO ---
         botaoLike.addEventListener('click', async () => {
             if (!idPost) return alert("Salve o post primeiro para poder curtir!");
 
@@ -183,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // --- 3. LÓGICA EVENTO DE COMENTAR ASSÍNCRONO ---
         formComentario.addEventListener('submit', async (e) => {
             e.preventDefault();
             const textoComentario = inputComentario.value.trim();
@@ -219,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarFeedBanco();
 
     // =======================================================
-    // ENVIO DE NOVAS POSTAGENS
+    // ENVIO DE NOVAS POSTAGENS (Mecanismo Anti-Duplicação Aplicado)
     // =======================================================
     if (!form || !feedContainer) return;
 
@@ -234,12 +232,27 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
 
+        // 🛡️ TRAVA 1: Se um post já estiver sendo enviado, ignora cliques extras
+        if (enviandoPost) return;
+
         const legendaTexto = document.getElementById('post-legenda').value;
         const arquivo = inputArquivo.files[0];
+        
+        // Localiza dinamicamente o botão de envio para controle visual
+        const botaoSubmeter = form.querySelector('button[type="submit"]') || form.querySelector('.btn-comment-post');
 
         if (!arquivo) {
             alert("Por favor, selecione uma imagem!");
             return;
+        }
+
+        // Ativa o estado de carregamento e desativa o controle visual do botão
+        enviandoPost = true;
+        if (botaoSubmeter) {
+            botaoSubmeter.disabled = true;
+            botaoSubmeter.textContent = "Publicando...";
+            botaoSubmeter.style.opacity = "0.6";
+            botaoSubmeter.style.cursor = "not-allowed";
         }
 
         const leitor = new FileReader();
@@ -317,7 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Inicializa as interações passando o ID recém-gerado pelo MySQL
                 configurarInteracoesDoCard(novoPostElemento, dadosResultado.id_post);
 
                 const avisoVazio = feedContainer.querySelector('p');
@@ -332,6 +344,15 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error(error);
                 alert("Não foi possível publicar sua arte.");
+            } finally {
+                // 🔓 Libera o formulário para novos envios e restaura o botão
+                enviandoPost = false;
+                if (botaoSubmeter) {
+                    botaoSubmeter.disabled = false;
+                    botaoSubmeter.textContent = "Publicar";
+                    botaoSubmeter.style.opacity = "1";
+                    botaoSubmeter.style.cursor = "pointer";
+                }
             }
         };
 

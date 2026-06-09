@@ -1,0 +1,4 @@
+SELECT id_post, legenda, id_artista, COUNT(*) 
+FROM postagens 
+GROUP BY legenda, id_artista 
+HAVING COUNT(*) > 1;

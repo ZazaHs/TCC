@@ -34,7 +34,7 @@ module.exports = (db) => {
         const query = `
             SELECT p.id_post, p.imagem_post, p.legenda, p.id_artista, a.nome AS nome_artista,
                    (CASE WHEN p.id_artista IN (SELECT id_seguido FROM seguidores WHERE id_seguidor = ?) THEN 1 ELSE 0 END) AS prioridade_seguindo,
-                   COUNT(c.id_curtida) AS total_likes,
+                   COUNT(DISTINCT c.id_curtida) AS total_likes,
                    MAX(CASE WHEN c.id_artista = ? THEN 1 ELSE 0 END) AS usuario_ja_curtiu
             FROM postagens p
             JOIN artistas a ON p.id_artista = a.id_artista
@@ -54,19 +54,21 @@ module.exports = (db) => {
     });
 
     // =======================================================
-    // 3. ROTA DO ALGORITMO DO EXPLORAR / DESCOBERTA
+    // 3. ROTA DO ALGORITMO DO EXPLORAR / DESCOBERTA (CORRIGIDA)
     // GET /api/postagens/explorar/:id_usuario
     // =======================================================
     router.get('/explorar/:id', (req, res) => {
         const idUsuario = req.params.id;
 
-        // Algoritmo: Recomenda posts de outros artistas, dando destaque a quem tem menos seguidores
+        // 🛡️ O GROUP BY p.id_post garante que cada postagem apareça apenas uma vez,
+        // mesmo que o artista dono do post possua múltiplos seguidores cadastrados.
         const query = `
             SELECT p.id_post, p.imagem_post, p.legenda, p.id_artista, a.nome AS nome_artista,
                    (SELECT COUNT(*) FROM seguidores WHERE id_seguido = p.id_artista) AS total_seguidores
             FROM postagens p
             JOIN artistas a ON p.id_artista = a.id_artista
             WHERE p.id_artista != ?
+            GROUP BY p.id_post
             ORDER BY total_seguidores ASC, p.id_post DESC
             LIMIT 24
         `;
