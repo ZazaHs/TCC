@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const novoPostElemento = document.createElement('article');
                 novoPostElemento.classList.add('post');
 
-                // Define visual inicial baseado se o usuário já curtiu no banco
                 const coracaoInicial = post.usuario_ja_curtiu === 1 ? '❤️' : '🤍';
                 const classeCurtido = post.usuario_ja_curtiu === 1 ? 'curtido' : '';
 
@@ -106,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
 
-                // Configura interações assíncronas passando o ID real do post
                 configurarInteracoesDoCard(novoPostElemento, post.id_post);
 
                 novoPostElemento.querySelector('.user-info').addEventListener('click', () => {
@@ -134,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputComentario = elementoPost.querySelector('.comment-input');
         const listaComentarios = elementoPost.querySelector('.comments-list');
 
-        // --- 1. BUSCAR COMENTÁRIOS JÁ EXISTENTES DO BANCO ---
         if (idPost) {
             try {
                 const resComments = await fetch(`http://localhost:3000/api/postagens/${idPost}/comentarios`);
@@ -152,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // --- 2. LOGICA EVENTO DE LIKE ASSÍNCRONO ---
         botaoLike.addEventListener('click', async () => {
             if (!idPost) return alert("Salve o post primeiro para poder curtir!");
 
@@ -164,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (resposta.ok) {
-                    const resultado = await resposta.json();
+                    const resultado = await response.json();
                     let atualLikes = parseInt(displayLikes.textContent);
 
                     if (resultado.curtido) {
@@ -183,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // --- 3. LÓGICA EVENTO DE COMENTAR ASSÍNCRONO ---
         formComentario.addEventListener('submit', async (e) => {
             e.preventDefault();
             const textoComentario = inputComentario.value.trim();
@@ -219,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarFeedBanco();
 
     // =======================================================
-    // ENVIO DE NOVAS POSTAGENS
+    // ENVIO DE NOVAS POSTAGENS (BUNKER ANTI-DUPLICAÇÃO)
     // =======================================================
     if (!form || !feedContainer) return;
 
@@ -231,23 +226,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    form.addEventListener('submit', function(event) {
+    // Resetamos o estado de envio guardado no próprio elemento HTML
+    form.dataset.enviando = "false";
+
+    form.onsubmit = function(event) {
         event.preventDefault();
+
+        // 🛡️ TRAVA SUPREMA: Verifica no elemento HTML se um envio já está ocorrendo
+        if (form.dataset.enviando === "true") {
+            console.warn("⛔ Bloqueio de envio duplicado ativado no HTML.");
+            return;
+        }
 
         const legendaTexto = document.getElementById('post-legenda').value;
         const arquivo = inputArquivo.files[0];
+        const botaoSubmeter = form.querySelector('button[type="submit"]') || form.querySelector('.btn-comment-post');
 
         if (!arquivo) {
             alert("Por favor, selecione uma imagem!");
             return;
         }
 
+        // Grava o bloqueio diretamente no DOM do formulário e desativa o botão
+        form.dataset.enviando = "true";
+        if (botaoSubmeter) {
+            botaoSubmeter.disabled = true;
+            botaoSubmeter.textContent = "Publicando...";
+            botaoSubmeter.style.opacity = "0.5";
+            botaoSubmeter.style.cursor = "not-allowed";
+        }
+
         const leitor = new FileReader();
 
         leitor.onload = async function(e) {
+            // Verifica novamente dentro do leitor se já foi liberado por outra instância (防 duplicação do FileReader)
+            if (form.dataset.requestDisparada === "true") return;
+            form.dataset.requestDisparada = "true";
+
             const urlImagemConvertida = e.target.result;
 
             try {
+                console.log("📡 Enviando requisição única para a API...");
                 const resposta = await fetch('http://localhost:3000/api/postagens/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -262,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const dadosResultado = await resposta.json();
 
+                // Cria o card físico na tela
                 const novoPostElemento = document.createElement('article');
                 novoPostElemento.classList.add('post');
 
@@ -273,11 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <button class="btn-deletar" title="Excluir publicação">&times;</button>
                     </header>
-                    
                     <div class="post-image">
                         <img src="${urlImagemConvertida}" alt="Foto postada">
                     </div>
-
                     <div class="post-actions">
                         <div class="interaction-group">
                             <button class="like-btn">
@@ -288,11 +306,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>
                     </div>
-
                     <div class="post-content">
                         <p><strong>${nomeUsuarioLogado}</strong> ${legendaTexto}</p>
                     </div>
-
                     <div class="comments-section">
                         <div class="comments-list"></div>
                         <form class="comment-form">
@@ -317,7 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Inicializa as interações passando o ID recém-gerado pelo MySQL
                 configurarInteracoesDoCard(novoPostElemento, dadosResultado.id_post);
 
                 const avisoVazio = feedContainer.querySelector('p');
@@ -332,9 +347,19 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error(error);
                 alert("Não foi possível publicar sua arte.");
+            } finally {
+                // 🔓 Liberação total das travas no DOM após resposta da API
+                form.dataset.enviando = "false";
+                form.dataset.requestDisparada = "false";
+                if (botaoSubmeter) {
+                    botaoSubmeter.disabled = false;
+                    botaoSubmeter.textContent = "Publicar";
+                    botaoSubmeter.style.opacity = "1";
+                    botaoSubmeter.style.cursor = "pointer";
+                }
             }
         };
 
         leitor.readAsDataURL(arquivo);
-    });
+    };
 });
