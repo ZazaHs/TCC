@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (resposta.ok) {
-                    const resultado = await response.json();
+                    const resultado = await resposta.json();
                     let atualLikes = parseInt(displayLikes.textContent);
 
                     if (resultado.curtido) {
@@ -226,17 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Resetamos o estado de envio guardado no próprio elemento HTML
     form.dataset.enviando = "false";
 
     form.onsubmit = function(event) {
         event.preventDefault();
 
-        // 🛡️ TRAVA SUPREMA: Verifica no elemento HTML se um envio já está ocorrendo
-        if (form.dataset.enviando === "true") {
-            console.warn("⛔ Bloqueio de envio duplicado ativado no HTML.");
-            return;
-        }
+        if (form.dataset.enviando === "true") return;
 
         const legendaTexto = document.getElementById('post-legenda').value;
         const arquivo = inputArquivo.files[0];
@@ -247,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Grava o bloqueio diretamente no DOM do formulário e desativa o botão
         form.dataset.enviando = "true";
         if (botaoSubmeter) {
             botaoSubmeter.disabled = true;
@@ -259,14 +253,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const leitor = new FileReader();
 
         leitor.onload = async function(e) {
-            // Verifica novamente dentro do leitor se já foi liberado por outra instância (防 duplicação do FileReader)
             if (form.dataset.requestDisparada === "true") return;
             form.dataset.requestDisparada = "true";
 
             const urlImagemConvertida = e.target.result;
 
             try {
-                console.log("📡 Enviando requisição única para a API...");
                 const resposta = await fetch('http://localhost:3000/api/postagens/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -281,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const dadosResultado = await resposta.json();
 
-                // Cria o card físico na tela
                 const novoPostElemento = document.createElement('article');
                 novoPostElemento.classList.add('post');
 
@@ -348,7 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(error);
                 alert("Não foi possível publicar sua arte.");
             } finally {
-                // 🔓 Liberação total das travas no DOM após resposta da API
                 form.dataset.enviando = "false";
                 form.dataset.requestDisparada = "false";
                 if (botaoSubmeter) {

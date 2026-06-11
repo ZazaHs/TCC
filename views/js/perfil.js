@@ -58,6 +58,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (inputNome) inputNome.value = usuarioObj.nome || usuarioObj.username || '';
                     if (inputBio) inputBio.value = usuarioObj.biografia || '';
                 }
+                // Mesmo na contingência, vamos forçar a chamada dos seguidores para não zerar
+                await carregarContadoresSeguidores();
                 return; 
             }
 
@@ -82,11 +84,44 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                 }
                 
+                // Tenta mapear os dados caso o endpoint já traga
                 if (txtSeguidores) txtSeguidores.textContent = dadosArtista.totalSeguidores || dadosArtista.seguidores || "0";
                 if (txtSeguindo) txtSeguindo.textContent = dadosArtista.totalSeguindo || dadosArtista.seguindo || "0";
             }
+
+            // Garante a execução da busca de contagem real
+            await carregarContadoresSeguidores();
+
         } catch (error) {
             console.error("❌ Erro ao processar informações do perfil:", error);
+            await carregarContadoresSeguidores(); // Tenta carregar os contadores mesmo em falha estrutural
+        }
+    }
+
+    // =======================================================
+    // 2.5 BUSCA OS NÚMEROS DE SEGUIDORES DINAMICAMENTE DO SEGUIDORES
+    // =======================================================
+    async function carregarContadoresSeguidores() {
+        // Busca Seguidores
+        try {
+            const resSeguidores = await fetch(`http://localhost:3000/api/seguidores/contar/${idArtista}`);
+            if (resSeguidores.ok) {
+                const dados = await resSeguidores.json();
+                if (txtSeguidores) txtSeguidores.textContent = dados.total || dados.seguidores || 0;
+            }
+        } catch (err) {
+            console.warn("⚠️ Não foi possível consultar a API de seguidores (Rota de contagem não configurada).");
+        }
+
+        // Busca Seguindo
+        try {
+            const resSeguindo = await fetch(`http://localhost:3000/api/seguidores/contar-seguindo/${idArtista}`);
+            if (resSeguindo.ok) {
+                const dados = await resSeguindo.json();
+                if (txtSeguindo) txtSeguindo.textContent = dados.total || dados.seguindo || 0;
+            }
+        } catch (err) {
+            console.warn("⚠️ Não foi possível consultar a API de seguindo (Rota de contagem não configurada).");
         }
     }
 
@@ -100,7 +135,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             let urlFinal = `http://localhost:3000/api/postagens/artista/${idArtista}`;
             
-            console.log(`📡 Buscando publicações em: ${urlFinal}`);
+            console.log(`📡 Buscando publicações in: ${urlFinal}`);
             let resposta = await fetch(urlFinal);
             let textoBruto = await resposta.text();
 
@@ -132,7 +167,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const urlImagem = post.imagem_post || post.imagem || post.midia || 'https://placehold.co/600x400/222/fff?text=Sem+Imagem';
                 const textoLegenda = post.legenda || post.descricao || 'Sem legenda';
                 
-                // 🔑 MAPEAMENTO DIRETAMENTE PARA A COLUNA REAL: id_post
                 const idPostagem = post.id_post || post.id || post.id_postagem;
 
                 card.innerHTML = `
@@ -255,7 +289,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
 
                 if (resposta.ok) {
-                    alert('Perfil atualizado com sucesso!');
+                    alert('Perfil updated com sucesso!');
                     await carregarDadosPerfil(); 
                 } else {
                     const dadosErro = await resposta.json();

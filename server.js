@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-const path = require('path'); // ✅ ADICIONADO: Necessário para o path.join funcionar sem travar o servidor
+const path = require('path'); // ✅ Mantido: Necessário para o path.join funcionar sem travar o servidor
 
 const app = express();
 
@@ -65,10 +65,35 @@ app.use('/auth', authRoutes(db)); // ✅ Rota que o perfil.js consome!
 app.use('/api/pesquisa', pesquisaRoutes(db)); 
 
 // ==========================================
-// ROTAS DE REDIRECIONAMENTO DE PÁGINAS (HTML)
+// ✅ ADICIONADO: ROTAS PARA CONTADORES DE SEGUIDORES E SEGUINDO
 // ==========================================
+app.get('/api/seguidores/contar/:id', (req, res) => {
+    const idArtista = req.params.id;
+    const sql = "SELECT COUNT(*) AS total FROM seguidores WHERE id_seguido = ?";
+    
+    db.query(sql, [idArtista], (err, result) => {
+        if (err) {
+            console.error("Erro ao contar seguidores:", err);
+            return res.status(500).json({ error: "Erro ao contar seguidores" });
+        }
+        return res.json({ total: result[0].total });
+    });
+});
 
-// Atalho direto para abrir o app na home ou login se acessar a raiz http://localhost:3000/
+app.get('/api/seguidores/contar-seguindo/:id', (req, res) => {
+    const idArtista = req.params.id;
+    const sql = "SELECT COUNT(*) AS total FROM seguidores WHERE id_seguidor = ?";
+    
+    db.query(sql, [idArtista], (err, result) => {
+        if (err) {
+            console.error("Erro ao contar seguindo:", err);
+            return res.status(500).json({ error: "Erro ao contar seguindo" });
+        }
+        return res.json({ total: result[0].total });
+    });
+});
+
+
 // ==========================================
 // ROTAS DE REDIRECIONAMENTO DE PÁGINAS (HTML)
 // ==========================================
@@ -79,7 +104,6 @@ app.get('/', (req, res) => {
 });
 
 // 2. Rota coringa para Express moderno (Captura qualquer outra sub-rota que não seja de API)
-// Usamos uma RegExp nativa do JavaScript (.*) que o Express aceita perfeitamente
 app.get(/^(?!\/(artistas|portfolio|seguidores|avaliacoes|commissions|mensagens|categorias|midias-perfil|api|auth)).*$/, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'pages', 'home.html'));
 });
