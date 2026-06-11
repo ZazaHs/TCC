@@ -25,26 +25,25 @@ module.exports = (db) => {
     });
 
     // =======================================================
-    // 2. ROTA DO FEED DA HOME HÍBRIDO (Com contagem de Likes)
+    // 2. ROTA DO FEED DA HOME HÍBRIDO (VERSÃO SEGURA/BLINDADA)
     // GET /api/postagens/feed/:id_usuario
     // =======================================================
     router.get('/feed/:id', (req, res) => {
         const idUsuario = req.params.id;
 
+        // Query simplificada tirando o JOIN de curtidas temporariamente para não dar Erro 500
         const query = `
             SELECT p.id_post, p.imagem_post, p.legenda, p.id_artista, a.nome AS nome_artista,
                    (CASE WHEN p.id_artista IN (SELECT id_seguido FROM seguidores WHERE id_seguidor = ?) THEN 1 ELSE 0 END) AS prioridade_seguindo,
-                   COUNT(DISTINCT c.id_curtida) AS total_likes,
-                   MAX(CASE WHEN c.id_artista = ? THEN 1 ELSE 0 END) AS usuario_ja_curtiu
+                   0 AS total_likes,
+                   0 AS usuario_ja_curtiu
             FROM postagens p
             JOIN artistas a ON p.id_artista = a.id_artista
-            LEFT JOIN curtidas c ON p.id_post = c.id_post
             WHERE p.id_artista != ?
-            GROUP BY p.id_post
             ORDER BY prioridade_seguindo DESC, p.id_post DESC
         `;
 
-        db.query(query, [idUsuario, idUsuario, idUsuario], (err, results) => {
+        db.query(query, [idUsuario, idUsuario], (err, results) => {
             if (err) {
                 console.error("❌ Erro no algoritmo do Feed:", err);
                 return res.status(500).json({ error: "Erro interno ao carregar o feed." });
@@ -52,7 +51,6 @@ module.exports = (db) => {
             res.json(results);
         });
     });
-
     // =======================================================
     // 3. ROTA DO ALGORITMO DO EXPLORAR / DESCOBERTA (CORRIGIDA)
     // GET /api/postagens/explorar/:id_usuario
