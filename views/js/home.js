@@ -68,13 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const coracaoInicial = post.usuario_ja_curtiu === 1 ? '❤️' : '🤍';
                 const classeCurtido = post.usuario_ja_curtiu === 1 ? 'curtido' : '';
 
+                // ✅ SEGURANÇA: Só renderiza o botão se o post pertencer ao usuário logado
+                const ehMeuPost = post.id_artista == idLogadoReal;
+                const botaoDeletarHtml = ehMeuPost 
+                    ? `<button class="btn-deletar" title="Excluir publicação" style="background: none; border: none; color: #ff3b30; font-size: 22px; cursor: pointer; padding: 0 5px;">&times;</button>` 
+                    : '';
+
                 novoPostElemento.innerHTML = `
-                    <header class="post-header">
+                    <header class="post-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <div class="user-info" style="cursor: pointer;">
                             <div class="avatar-small"></div>
                             <strong>${post.nome_artista || 'Artista'}</strong>
                             ${post.prioridade_seguindo === 1 ? '<span style="background: #007bff; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 10px; font-weight: 600;">Seguindo</span>' : ''}
                         </div>
+                        ${botaoDeletarHtml}
                     </header>
                     
                     <div class="post-image">
@@ -104,6 +111,34 @@ document.addEventListener('DOMContentLoaded', () => {
                         </form>
                     </div>
                 `;
+
+                // ✅ EVENTO DE DELETAR DA HOME (BANCO DE DADOS)
+                if (ehMeuPost) {
+                    const btnDel = novoPostElemento.querySelector('.btn-deletar');
+                    btnDel.addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        const confirmar = confirm("Tem certeza que deseja excluir permanentemente esta publicação?");
+                        if (!confirmar) return;
+
+                        try {
+                            const respostaDel = await fetch(`http://localhost:3000/api/postagens/${post.id_post}`, {
+                                method: 'DELETE'
+                            });
+                            
+                            if (respostaDel.ok) {
+                                novoPostElemento.remove();
+                                // Se o feed ficar limpo, bota mensagem de vazio
+                                if (feedContainer.children.length === 0) {
+                                    feedContainer.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">Nenhuma publicação encontrada.</p>';
+                                }
+                            } else {
+                                alert("Erro ao deletar postagem no servidor.");
+                            }
+                        } catch (err) {
+                            console.error("Erro ao deletar post do feed carregado:", err);
+                        }
+                    });
+                }
 
                 configurarInteracoesDoCard(novoPostElemento, post.id_post);
 
@@ -277,12 +312,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 novoPostElemento.classList.add('post');
 
                 novoPostElemento.innerHTML = `
-                    <header class="post-header">
+                    <header class="post-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <div class="user-info">
                             <div class="avatar-small"></div>
                             <strong>${nomeUsuarioLogado}</strong>
                         </div>
-                        <button class="btn-deletar" title="Excluir publicação">&times;</button>
+                        <button class="btn-deletar" title="Excluir publicação" style="background: none; border: none; color: #ff3b30; font-size: 22px; cursor: pointer; padding: 0 5px;">&times;</button>
                     </header>
                     <div class="post-image">
                         <img src="${urlImagemConvertida}" alt="Foto postada">

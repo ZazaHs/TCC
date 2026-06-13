@@ -1,7 +1,7 @@
+// views/js/chat.js
 document.addEventListener('DOMContentLoaded', () => {
     let idLogadoRaw = sessionStorage.getItem('idArtistaLogado');
     
-    // Filtro sanitário: Corrige na hora se o ID no sessionStorage estiver corrompido com ":"
     if (idLogadoRaw && idLogadoRaw.includes(':')) {
         idLogadoRaw = idLogadoRaw.split(':')[0];
         sessionStorage.setItem('idArtistaLogado', idLogadoRaw);
@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const itemMenuMensagens = document.querySelector('a[href*="chat.html"]') || document.getElementById('menu-mensagens');
 
+    // Mapeamento dos elementos de mídia
+    const btnAnexarFoto = document.getElementById('btn-anexar-foto');
+    const fotoInput = document.getElementById('foto-input');
+
     let intervaloMensagens = null; 
 
     if (!idLogado || idLogado === "null" || idLogado === "undefined") {
@@ -47,28 +51,26 @@ document.addEventListener('DOMContentLoaded', () => {
     async function carregarContatos() {
         try {
             const response = await fetch(`http://localhost:3000/mensagens/contatos/${idLogado}`);
-            
-            if (!response.ok) {
-                // Isso vai nos dizer no console se o erro é 400, 404 ou 500
-                console.error(`O servidor respondeu com status de erro: ${response.status}`);
-                throw new Error(`Erro ${response.status} ao buscar contatos no servidor`);
-            }
+            if (!response.ok) throw new Error(`Erro ${response.status}`);
 
             const artistas = await response.json();
             if (!listaContatos) return;
 
             listaContatos.innerHTML = '';
 
-            // CORRIGIDO: Alterado de artists.length para artistas.length
-            if (!artistas || artistas.length === 0) {
-                listaContatos.innerHTML = '<p style="color: #666; font-size: 14px; padding: 10px;">Você não segue nenhum artista.</p>';
+            // ✅ LINHA CORRIGIDA: Mudado de artists para artistas
+            if ((!artistas || artistas.length === 0) && !idConversaAtiva) {
+                listaContatos.innerHTML = '<p style="color: #666; font-size: 14px; padding: 10px;">Nenhuma conversa ativa no momento.</p>';
                 atualizarBolinhaGlobal(false);
                 return;
             }
 
             let temMensagemNaoLidaGeral = false;
+            let idConversaAtivaNaLista = false;
 
             artistas.forEach(artista => {
+                if (artista.id_artista == idConversaAtiva) idConversaAtivaNaLista = true;
+
                 const item = document.createElement('div');
                 item.classList.add('contato-item');
                 
@@ -82,9 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const fotoUrl = artista.foto_perfil || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                
                 const deveMostrarBolinhaLocal = artista.tem_novas_mensagens == 1 && artista.id_artista != idConversaAtiva;
                 
-                if (artista.tem_novas_mensagens == 1) {
+                if (artista.tem_novas_mensagens == 1 && artista.id_artista != idConversaAtiva) {
                     temMensagemNaoLidaGeral = true;
                 }
 
@@ -115,13 +118,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 listaContatos.appendChild(item);
             });
 
+            if (idConversaAtiva && !idConversaAtivaNaLista) {
+                 injetarContatoParceria(idConversaAtiva);
+            }
+
             atualizarBolinhaGlobal(temMensagemNaoLidaGeral);
 
         } catch (error) {
-            console.error("Erro detalhado ao carregar lista de contatos:", error);
+            console.error("Erro ao carregar lista de contatos:", error);
+        }
+    }
+
+    async function injetarContatoParceria(idDestino) {
+        try {
+            const response = await fetch(`http://localhost:3000/artistas/perfil-publico/${idDestino}/${idLogado}`);
+            if (!response.ok) return;
+            const artista = await response.json();
+
+            const item = document.createElement('div');
+            item.classList.add('contato-item');
+            item.style = `
+                display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; 
+                background: #333; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 8px;
+                border-left: 3px solid #007bff;
+            `;
+
+            const fotoUrl = artista.foto_perfil || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            item.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="${fotoUrl}" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+                    <span style="color: #fff; font-weight: 500; font-size: 15px;">${artista.nome} (Parceria)</span>
+                </div>
+            `;
+
+            item.addEventListener('click', () => {
+                idConversaAtiva = artista.id_artista;
+                sessionStorage.setItem('idConversaAtiva', idConversaAtiva);
+                abrirConversa(artista);
+            });
+
             if (listaContatos) {
-                listaContatos.innerHTML = '<p style="color: #ff3b30; font-size: 14px; padding: 10px;">Erro ao carregar contatos.</p>';
+                const textoVazio = listaContatos.querySelector('p');
+                if (textoVazio) textoVazio.remove();
+                listaContatos.insertBefore(item, listaContatos.firstChild);
             }
+
+            abrirConversa(artista);
+
+        } catch (err) {
+            console.error("Erro ao injetar contato de parceria:", err);
         }
     }
 
@@ -165,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    async function carregarMensagens() {
+ async function carregarMensagens() {
         if (!idConversaAtiva) return;
 
         try {
@@ -183,17 +228,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 const box = document.createElement('div');
                 box.style = "margin: 8px 0; display: flex;";
 
+                const ehImagem = msg.conteudo.startsWith('data:image/');
+                
+                // ✅ AGORA: O clique chama a função "abrirModalImagem" passando o Base64 dela
+                const elementoConteudo = ehImagem 
+                    ? `<img src="${msg.conteudo}" style="max-width: 100%; max-height: 250px; border-radius: 10px; display: block; cursor: pointer; object-fit: cover;" onclick="abrirModalImagem('${msg.conteudo}')">`
+                    : msg.conteudo;
+
                 if (msg.id_remetente == idLogado) {
                     box.style.justifyContent = 'flex-end';
                     box.innerHTML = `
-                        <div style="background: #007bff; color: white; padding: 10px 14px; border-radius: 15px 15px 0 15px; max-width: 65%; word-wrap: break-word;">
-                            ${msg.conteudo}
+                        <div style="background: #007bff; color: white; padding: ${ehImagem ? '6px' : '10px 14px'}; border-radius: 15px 15px 0 15px; max-width: 65%; word-wrap: break-word;">
+                            ${elementoConteudo}
                         </div>`;
                 } else {
                     box.style.justifyContent = 'flex-start';
                     box.innerHTML = `
-                        <div style="background: #292929; color: white; padding: 10px 14px; border-radius: 15px 15px 15px 0; max-width: 65%; border: 1px solid #333; word-wrap: break-word;">
-                            ${msg.conteudo}
+                        <div style="background: #292929; color: white; padding: ${ehImagem ? '6px' : '10px 14px'}; border-radius: 15px 15px 15px 0; max-width: 65%; border: 1px solid #333; word-wrap: break-word;">
+                            ${elementoConteudo}
                         </div>`;
                 }
                 chatMensagens.appendChild(box);
@@ -232,6 +284,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ========================================================
+    // LOGICA DO BOTÃO "+" (ANEXAR FOTO EM BASE64)
+    // ========================================================
+    if (btnAnexarFoto && fotoInput) {
+        btnAnexarFoto.addEventListener('click', (e) => {
+            e.preventDefault(); // Trava o reload da página
+            fotoInput.click();  // Simula o clique no input de arquivo oculto
+        });
+
+        fotoInput.addEventListener('change', async (e) => {
+            const arquivo = e.target.files[0];
+            if (!arquivo) return;
+
+            // Validação de tamanho: Limita em 2MB para preservar requisições HTTP rápidas
+            if (arquivo.size > 2 * 1024 * 1024) {
+                alert("A imagem é muito grande! Escolha um arquivo de até 2MB.");
+                fotoInput.value = '';
+                return;
+            }
+
+            const leitor = new FileReader();
+            
+            leitor.onloadend = async () => {
+                const base64Imagem = leitor.result;
+
+                try {
+                    const response = await fetch('http://localhost:3000/mensagens/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id_remetente: idLogado,
+                            id_destinatario: idConversaAtiva,
+                            conteudo: base64Imagem
+                        })
+                    });
+
+                    if (response.ok) {
+                        fotoInput.value = ''; 
+                        carregarMensagens(); 
+                    }
+                } catch (error) {
+                    console.error("Erro ao transmitir foto em Base64:", error);
+                }
+            };
+
+            leitor.readAsDataURL(arquivo);
+        });
+    }
+
     if (btnEnviarMensagem) {
         btnEnviarMensagem.addEventListener('click', enviarMensagem);
     }
@@ -244,23 +345,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Inicializa carregamento lateral de contatos
     carregarContatos();
-
-    // Loop leve para buscar novas notificações de mensagens a cada 5 segundos
     setInterval(carregarContatos, 5000);
 
-    // Resgata o chat ativo caso a página sofro um F5 manual
-    if (idConversaAtiva) {
-        fetch(`http://localhost:3000/mensagens/contatos/${idLogado}`)
-            .then(res => res.json())
-            .then(artistas => {
-                if (artistas && Array.isArray(artistas)) {
-                    const selecionado = artistas.find(a => a.id_artista == idConversaAtiva);
-                    if (selecionado) {
-                        abrirConversa(selecionado);
-                    }
-                }
-            }).catch(err => console.error("Erro ao abrir chat automático:", err));
+
+    // ========================================================
+    // LÓGICA DO MODAL DE VISUALIZAÇÃO E DOWNLOAD DE FOTOS
+    // ========================================================
+    const modalImagem = document.getElementById('modal-imagem');
+    const imagemExpandida = document.getElementById('imagem-expandida');
+    const btnBaixarImagem = document.getElementById('btn-baixar-imagem');
+    const fecharModal = document.getElementById('fechar-modal');
+
+    // Função global dentro do DOMContentLoaded para abrir o modal
+    window.abrirModalImagem = function(srcBase64) {
+        if (!modalImagem || !imagemExpandida || !btnBaixarImagem) return;
+        
+        imagemExpandida.src = srcBase64;
+        btnBaixarImagem.href = srcBase64; // O link de download recebe o Base64 direto
+        modalImagem.style.display = 'flex';
+    };
+
+    // Fechar ao clicar no "X"
+    if (fecharModal) {
+        fecharModal.addEventListener('click', () => {
+            modalImagem.style.display = 'none';
+        });
+    }
+
+    // Fechar ao clicar no fundo preto do modal
+    if (modalImagem) {
+        modalImagem.addEventListener('click', (e) => {
+            if (e.target === modalImagem) {
+                modalImagem.style.display = 'none';
+            }
+        });
     }
 });
