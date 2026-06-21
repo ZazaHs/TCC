@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
 
 body{
-  background-color: black;
+  background-image: url('/views/media/WhatsApp\ Image\ 2026-05-22\ at\ 21.29.48.jpg');
+  background-size: cover;
+  background-position: center;
   font-family: 'Pompiere', cursive;
   
 }
@@ -39,7 +41,7 @@ body{
 /* Remove a estilização padrão dos links dentro da nav-links */
 .nav-links a {
     text-decoration: none; /* Remove o sublinhado */
-    color: gray;        /* Deixa o texto preto (ou a cor que preferir) */
+    color: white;        /* Deixa o texto preto (ou a cor que preferir) */
     display: flex;         /* Garante que o link ocupe todo o espaço do item */
     align-items: center;
     gap: 10px;             /* Espaço entre o ícone e o texto */
@@ -57,7 +59,7 @@ body{
 
 /* Efeito visual opcional: destaca o item quando o usuário passa o mouse por cima */
 .nav-links li:hover {
-    background-color: #f2f2f2; 
+    background-color: black; 
 }
 
 /* 2. FEED CENTRAL */
@@ -356,4 +358,81 @@ body{
 
 .btn-deletar:active {
     transform: scale(0.9);
+}
+
+/* O fundo escuro que cobre a tela inteira */
+.modal-overlay {
+    display: none; /* Começa escondido! O JS vai mudar para 'flex' */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo preto transparente */
+    z-index: 1000; /* Fica por cima de tudo */
+    justify-content: center;
+    align-items: center;
+}
+
+/* A caixinha branca central que guarda o formulário */
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* O botão X de fechar o modal */
+.fechar-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #262626;
+    transition: transform 0.2s;
+}
+
+.fechar-modal:hover {
+    transform: scale(1.1);
+    color: #ed4956;
+}
+
+/* Retira bordas extras do seu form pois agora ele está no modal */
+.modal-content .create-post-box {
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    margin: 0;
+}
+
+
+#btn-abrir-modal-post {
+    background: transparent;     /* Remove o fundo cinza padrão */
+    border: none;                /* Remove a borda dura */
+    width: 100%;                 /* Ocupa a largura total da sidebar */
+    padding: 12px;               /* Espaçamento interno confortável */
+    text-align: left;            /* Alinha o texto à esquerda */
+    font-size: 16px;             /* Tamanho da fonte igual aos links */
+    color: white;              /* Cor do texto escuro */
+    font-family: inherit;        /* Puxa a mesma fonte do resto do site */
+    display: flex;
+    align-items: center;
+    gap: 15px;                   /* Espaço perfeito entre o ícone e a palavra "Criar" */
+    border-radius: 8px;          /* Bordas arredondadas ao passar o mouse */
+    cursor: pointer;             /* Muda a setinha para a mãozinha de clique */
+    transition: background 0.2s ease; /* Transição suave */
+}
+
+/* Efeito ao passar o mouse por cima (Hover) */
+#btn-abrir-modal-post:hover {
+    background-color: black;   /* Fundo cinza clarinho, idêntico ao Instagram */
+}
+
+/* Ajuste sutil no tamanho do ícone */
+#btn-abrir-modal-post .icone {
+    font-size: 22px;
 }
