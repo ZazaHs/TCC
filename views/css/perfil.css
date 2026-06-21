@@ -9,7 +9,9 @@
 }
 
 body {
-    background-color: #121212;
+    background-image: url('/views/media/WhatsApp\ Image\ 2026-05-22\ at\ 21.29.48.jpg');
+  background-size: cover;
+  background-position: center;
     color: white;
     overflow-x: hidden;
 }
@@ -56,7 +58,7 @@ body {
 
 .nav-links a {
     text-decoration: none; 
-    color: #888;        
+    color: white;      
     display: flex;         
     align-items: center;
     gap: 15px;             
@@ -67,7 +69,7 @@ body {
 }
 
 .nav-links li:hover {
-    background-color: #1a1a1a; 
+    background-color: black; 
 }
 
 .nav-links li:hover a {

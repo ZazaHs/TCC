@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
 /* Configurações Gerais */
 body{
-  background-color: black;
+  background-image: url('/views/media/WhatsApp\ Image\ 2026-05-22\ at\ 21.29.48.jpg');
+  background-size: cover;
+  background-position: center;
   font-family: 'Pompiere', cursive;
   color: white;
 }
@@ -39,7 +41,7 @@ body{
 /* Remove a estilização padrão dos links dentro da nav-links */
 .nav-links a {
     text-decoration: none; /* Remove o sublinhado */
-    color: gray;        /* Deixa o texto preto (ou a cor que preferir) */
+    color: white;         /* Deixa o texto preto (ou a cor que preferir) */
     display: flex;         /* Garante que o link ocupe todo o espaço do item */
     align-items: center;
     gap: 10px;             /* Espaço entre o ícone e o texto */
@@ -57,7 +59,7 @@ body{
 
 /* Efeito visual opcional: destaca o item quando o usuário passa o mouse por cima */
 .nav-links li:hover {
-    background-color: #f2f2f2; 
+    background-color: black; 
 }
 
 /* --- Área de Chat Principal --- */

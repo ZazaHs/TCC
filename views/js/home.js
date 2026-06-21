@@ -1,11 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // =======================================================
+    // 1. VARIÁVEIS GLOBAIS E ELEMENTOS DA TELA
+    // =======================================================
     const form = document.getElementById('form-novo-post');
     const feedContainer = document.getElementById('feed-posts');
     const inputArquivo = document.getElementById('post-imagem-arquivo');
     const textoNomeArquivo = document.getElementById('nome-arquivo-selecionado');
+    
+    // Variáveis do Modal
+    const modal = document.getElementById('modal-criar-post');
+    const btnAbrirModal = document.getElementById('btn-abrir-modal-post');
+    const btnFecharModal = document.getElementById('btn-fechar-modal');
 
     // =======================================================
-    // GERENCIAMENTO DE SESSÃO
+    // 2. LÓGICA DO MODAL (JANELA FLUTUANTE)
+    // =======================================================
+    if (btnAbrirModal && modal) {
+        btnAbrirModal.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.style.display = 'flex';
+        });
+    }
+
+    if (btnFecharModal && modal) {
+        btnFecharModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // =======================================================
+    // 3. GERENCIAMENTO DE SESSÃO DO ARTISTA
     // =======================================================
     const urlParams = new URLSearchParams(window.location.search);
     let idArtista = urlParams.get('id');
@@ -41,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =======================================================
-    // CARREGAMENTO DINÂMICO DO FEED HÍBRIDO
+    // 4. CARREGAMENTO DINÂMICO DO FEED DO BANCO DE DADOS
     // =======================================================
     async function carregarFeedBanco() {
         if (!feedContainer) return;
@@ -68,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const coracaoInicial = post.usuario_ja_curtiu === 1 ? '❤️' : '🤍';
                 const classeCurtido = post.usuario_ja_curtiu === 1 ? 'curtido' : '';
 
-                // ✅ SEGURANÇA: Só renderiza o botão se o post pertencer ao usuário logado
                 const ehMeuPost = post.id_artista == idLogadoReal;
                 const botaoDeletarHtml = ehMeuPost 
                     ? `<button class="btn-deletar" title="Excluir publicação" style="background: none; border: none; color: #ff3b30; font-size: 22px; cursor: pointer; padding: 0 5px;">&times;</button>` 
@@ -112,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
 
-                // ✅ EVENTO DE DELETAR DA HOME (BANCO DE DADOS)
                 if (ehMeuPost) {
                     const btnDel = novoPostElemento.querySelector('.btn-deletar');
                     btnDel.addEventListener('click', async (e) => {
@@ -127,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             
                             if (respostaDel.ok) {
                                 novoPostElemento.remove();
-                                // Se o feed ficar limpo, bota mensagem de vazio
                                 if (feedContainer.children.length === 0) {
                                     feedContainer.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">Nenhuma publicação encontrada.</p>';
                                 }
@@ -156,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =======================================================
-    // LÓGICA ASSÍNCRONA DE INTERAÇÕES (LIKE E COMENTÁRIOS REAL)
+    // 5. LÓGICA DE INTERAÇÕES (LIKE E COMENTÁRIOS NO BANCO)
     // =======================================================
     async function configurarInteracoesDoCard(elementoPost, idPost) {
         const botaoLike = elementoPost.querySelector('.like-btn');
@@ -249,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarFeedBanco();
 
     // =======================================================
-    // ENVIO DE NOVAS POSTAGENS (BUNKER ANTI-DUPLICAÇÃO)
+    // 6. ENVIO DE NOVAS POSTAGENS PARA O BANCO E FEED
     // =======================================================
     if (!form || !feedContainer) return;
 
@@ -367,8 +394,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 feedContainer.prepend(novoPostElemento);
+                
+                // === A MÁGICA ACONTECE AQUI: Resetando o form e fechando o modal ===
                 form.reset();
                 textoNomeArquivo.textContent = "Nenhum arquivo selecionado";
+                if (modal) {
+                    modal.style.display = 'none';
+                }
 
             } catch (error) {
                 console.error(error);

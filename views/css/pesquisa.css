@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
 
 body {
-    background-color: black;
+    background-image: url('/views/media/WhatsApp\ Image\ 2026-05-22\ at\ 21.29.48.jpg');
+  background-size: cover;
+  background-position: center;
     font-family: 'Pompiere', cursive;
 }
 
@@ -40,7 +42,7 @@ body {
 
 .nav-links a {
     text-decoration: none;
-    color: gray;
+    color: white; 
     display: flex;
     align-items: center;
     gap: 10px;
@@ -57,7 +59,7 @@ body {
 }
 
 .nav-links li:hover {
-    background-color: #f2f2f2;
+    background-color: black; 
 }
 
 .nav-links .active-link {

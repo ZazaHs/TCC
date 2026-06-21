@@ -7,7 +7,9 @@
 
 body {
     font-family: 'Pompiere', cursive;
-    background-color: #0f0f0f;
+    background-image: url('/views/media/WhatsApp\ Image\ 2026-05-22\ at\ 21.29.48.jpg');
+  background-size: cover;
+  background-position: center;
     color: #e0e0e0;
     height: 100vh;
     display: flex;
@@ -37,7 +39,7 @@ body {
 }
 
 .nav-links a {
-    color: #999;
+    color: white; 
     text-decoration: none;
     font-size: 1.5rem;
     display: block;

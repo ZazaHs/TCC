@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Pompiere&display=swap');
 body{
-  background-color: black;
+  background-image: url('/views/media/WhatsApp\ Image\ 2026-05-22\ at\ 21.29.48.jpg');
+  background-size: cover;
+  background-position: center;
   font-family: 'Pompiere', cursive;
   text-align: center;
   color: white;
