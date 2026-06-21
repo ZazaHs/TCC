@@ -1,15 +1,15 @@
 // views/js/chat.js
 document.addEventListener('DOMContentLoaded', () => {
     let idLogadoRaw = sessionStorage.getItem('idArtistaLogado');
-    
+
     if (idLogadoRaw && idLogadoRaw.includes(':')) {
         idLogadoRaw = idLogadoRaw.split(':')[0];
         sessionStorage.setItem('idArtistaLogado', idLogadoRaw);
     }
-    
+
     const idLogado = idLogadoRaw;
     let idConversaAtiva = sessionStorage.getItem('idConversaAtiva');
-    
+
     if (idConversaAtiva && idConversaAtiva.includes(':')) {
         idConversaAtiva = idConversaAtiva.split(':')[0];
         sessionStorage.setItem('idConversaAtiva', idConversaAtiva);
@@ -21,11 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaContatos = document.getElementById('lista-contatos');
     const janelaChatAtiva = document.getElementById('janela-chat-ativa');
     const chatVazio = document.getElementById('chat-vazio');
-    
+
     const conversaNome = document.getElementById('conversa-nome');
     const conversaBio = document.getElementById('conversa-bio');
     const conversaFoto = document.getElementById('conversa-foto');
-    
+
     const chatMensagens = document.getElementById('chat-mensagens');
     const mensagemInput = document.getElementById('mensagem-input');
     const btnEnviarMensagem = document.getElementById('btn-enviar-mensagem');
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAnexarFoto = document.getElementById('btn-anexar-foto');
     const fotoInput = document.getElementById('foto-input');
 
-    let intervaloMensagens = null; 
+    let intervaloMensagens = null;
 
     if (!idLogado || idLogado === "null" || idLogado === "undefined") {
         alert("Por favor, faça login para acessar suas mensagens.");
@@ -73,20 +73,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const item = document.createElement('div');
                 item.classList.add('contato-item');
-                
+
                 item.style = `
                     display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; 
                     background: #222; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 8px;
                 `;
-                
+
                 if (artista.id_artista == idConversaAtiva) {
-                    item.style.background = '#333'; 
+                    item.style.background = '#333';
                 }
 
                 const fotoUrl = artista.foto_perfil || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-                
+
                 const deveMostrarBolinhaLocal = artista.tem_novas_mensagens == 1 && artista.id_artista != idConversaAtiva;
-                
+
                 if (artista.tem_novas_mensagens == 1 && artista.id_artista != idConversaAtiva) {
                     temMensagemNaoLidaGeral = true;
                 }
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.addEventListener('click', () => {
                     idConversaAtiva = artista.id_artista;
                     sessionStorage.setItem('idConversaAtiva', idConversaAtiva);
-                    
+
                     const bolinha = item.querySelector('.bolinha-notificacao');
                     if (bolinha) bolinha.remove();
 
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (idConversaAtiva && !idConversaAtivaNaLista) {
-                 injetarContatoParceria(idConversaAtiva);
+                injetarContatoParceria(idConversaAtiva);
             }
 
             atualizarBolinhaGlobal(temMensagemNaoLidaGeral);
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function atualizarBolinhaGlobal(mostrar) {
         if (!itemMenuMensagens) return;
         let bolinhaGlobal = itemMenuMensagens.querySelector('.bolinha-menu-global');
-        
+
         if (mostrar) {
             if (!bolinhaGlobal) {
                 bolinhaGlobal = document.createElement('span');
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
- async function carregarMensagens() {
+    async function carregarMensagens() {
         if (!idConversaAtiva) return;
 
         try {
@@ -229,9 +229,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 box.style = "margin: 8px 0; display: flex;";
 
                 const ehImagem = msg.conteudo.startsWith('data:image/');
-                
+
                 // ✅ AGORA: O clique chama a função "abrirModalImagem" passando o Base64 dela
-                const elementoConteudo = ehImagem 
+                const elementoConteudo = ehImagem
                     ? `<img src="${msg.conteudo}" style="max-width: 100%; max-height: 250px; border-radius: 10px; display: block; cursor: pointer; object-fit: cover;" onclick="abrirModalImagem('${msg.conteudo}')">`
                     : msg.conteudo;
 
@@ -276,8 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                mensagemInput.value = ''; 
-                carregarMensagens();      
+                mensagemInput.value = '';
+                carregarMensagens();
             }
         } catch (error) {
             console.error("Erro ao enviar mensagem:", error);
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const leitor = new FileReader();
-            
+
             leitor.onloadend = async () => {
                 const base64Imagem = leitor.result;
 
@@ -321,8 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                     if (response.ok) {
-                        fotoInput.value = ''; 
-                        carregarMensagens(); 
+                        fotoInput.value = '';
+                        carregarMensagens();
                     }
                 } catch (error) {
                     console.error("Erro ao transmitir foto em Base64:", error);
@@ -358,9 +358,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const fecharModal = document.getElementById('fechar-modal');
 
     // Função global dentro do DOMContentLoaded para abrir o modal
-    window.abrirModalImagem = function(srcBase64) {
+    window.abrirModalImagem = function (srcBase64) {
         if (!modalImagem || !imagemExpandida || !btnBaixarImagem) return;
-        
+
         imagemExpandida.src = srcBase64;
         btnBaixarImagem.href = srcBase64; // O link de download recebe o Base64 direto
         modalImagem.style.display = 'flex';

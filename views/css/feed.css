@@ -1,4 +1,5 @@
 .link-artista:hover {
     text-decoration: underline !important;
-    color: #cccccc !important; /* Dá uma clareada sutil ao passar o mouse */
+    color: #cccccc !important;
+    /* Dá uma clareada sutil ao passar o mouse */
 }

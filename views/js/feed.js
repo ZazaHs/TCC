@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fotoPerfil = post.artista_foto || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
                 const postElement = document.createElement('article');
                 postElement.classList.add('post-card');
-                
+
                 // Verifica se o post atual pertence ao usuário que está logado na sessão
                 const ehDonoDoPost = post.id_artista === parseInt(idArtistaLogado);
 
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. FUNÇÃO QUE ESCUTA O CLIQUE NO BOTÃO DE DELETAR
     function adicionarEventosDeExclusao() {
         const botoesDeletar = document.querySelectorAll('.btn-deletar-post');
-        
+
         botoesDeletar.forEach(botao => {
             botao.removeEventListener('click', deletarHandler); // Evita duplicar cliques na memória
             botao.addEventListener('click', deletarHandler);
@@ -133,9 +133,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Garante pegar o botão mesmo se clicar direto no emoji de lixeira
         const botao = e.target.closest('.btn-deletar-post');
         const idPost = botao.getAttribute('data-id');
-        
+
         const confirmar = confirm('Tem certeza que deseja apagar esta publicação da sua galeria?');
-        
+
         if (confirmar) {
             try {
                 const response = await fetch(`http://localhost:3000/api/postagens/${idPost}`, {
