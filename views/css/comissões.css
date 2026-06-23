@@ -7,9 +7,25 @@
 
 body {
     font-family: 'Pompiere', cursive;
-    background-image: url('/views/media/WhatsApp\ Image\ 2026-05-22\ at\ 21.29.48.jpg');
-  background-size: cover;
-  background-position: center;
+    background-image: url('/views/media/Design\ sem\ nome.png');
+
+    /* 1. Evita que a imagem vire um "mosaico" repetido */
+    background-repeat: no-repeat;
+
+    /* 2. Centraliza o ponto principal da imagem na tela */
+    background-position: center center;
+
+    /* 3. A propriedade mais importante! Faz a imagem cobrir todo o espaço 
+          mantendo a proporção correta, sem amassar ou esticar os pixels */
+    background-size: cover;
+
+    /* 4. Opcional: deixa o fundo fixo enquanto o usuário rola a página (efeito parallax).
+          Isso dá uma sensação muito moderna e profissional para o site */
+    background-attachment: fixed;
+
+    /* 5. Força o navegador a renderizar o fundo com mais nitidez e contraste */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: auto;
     color: #e0e0e0;
     height: 100vh;
     display: flex;
@@ -39,7 +55,7 @@ body {
 }
 
 .nav-links a {
-    color: white; 
+    color: white;
     text-decoration: none;
     font-size: 1.5rem;
     display: block;
@@ -47,13 +63,15 @@ body {
     transition: 0.3s;
 }
 
-.nav-links a:hover, .nav-links a.active {
+.nav-links a:hover,
+.nav-links a.active {
     color: #fff;
     background-color: #252525;
 }
 
 .nav-links a.active {
-    border-left: 4px solid #ffffff; /* Destaque em Branco */
+    border-left: 4px solid #ffffff;
+    /* Destaque em Branco */
 }
 
 .nav-footer a {
@@ -75,8 +93,15 @@ body {
     border-bottom: 1px solid #2a2a2a;
 }
 
-.user-info h2 { font-size: 2rem; color: #fff; }
-.user-info p { font-size: 1.1rem; color: #777; }
+.user-info h2 {
+    font-size: 2rem;
+    color: #fff;
+}
+
+.user-info p {
+    font-size: 1.1rem;
+    color: #777;
+}
 
 /* --- Dashboard Conteúdo --- */
 .dashboard-content {
@@ -140,7 +165,8 @@ body {
 }
 
 .order-item:hover {
-    border-color: #fff; /* Acende a borda em branco */
+    border-color: #fff;
+    /* Acende a borda em branco */
 }
 
 .order-info-block {
@@ -167,8 +193,16 @@ body {
     width: 40%;
 }
 
-.deadline { font-size: 1.2rem; color: #aaa; }
-.price { font-size: 1.4rem; color: #fff; font-weight: bold; }
+.deadline {
+    font-size: 1.2rem;
+    color: #aaa;
+}
+
+.price {
+    font-size: 1.4rem;
+    color: #fff;
+    font-weight: bold;
+}
 
 /* Badges de Status (Mantendo minimalista) */
 .badge {

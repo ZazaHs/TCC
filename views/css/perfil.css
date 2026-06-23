@@ -9,9 +9,25 @@
 }
 
 body {
-    background-image: url('/views/media/WhatsApp\ Image\ 2026-05-22\ at\ 21.29.48.jpg');
-  background-size: cover;
-  background-position: center;
+    background-image: url('/views/media/Design\ sem\ nome.png');
+
+    /* 1. Evita que a imagem vire um "mosaico" repetido */
+    background-repeat: no-repeat;
+
+    /* 2. Centraliza o ponto principal da imagem na tela */
+    background-position: center center;
+
+    /* 3. A propriedade mais importante! Faz a imagem cobrir todo o espaço 
+          mantendo a proporção correta, sem amassar ou esticar os pixels */
+    background-size: cover;
+
+    /* 4. Opcional: deixa o fundo fixo enquanto o usuário rola a página (efeito parallax).
+          Isso dá uma sensação muito moderna e profissional para o site */
+    background-attachment: fixed;
+
+    /* 5. Força o navegador a renderizar o fundo com mais nitidez e contraste */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: auto;
     color: white;
     overflow-x: hidden;
 }
@@ -52,16 +68,16 @@ body {
 
 .nav-links li {
     list-style: none;
-    border-radius: 8px;    
+    border-radius: 8px;
     transition: background 0.2s ease;
 }
 
 .nav-links a {
-    text-decoration: none; 
-    color: white;      
-    display: flex;         
+    text-decoration: none;
+    color: white;
+    display: flex;
     align-items: center;
-    gap: 15px;             
+    gap: 15px;
     width: 100%;
     padding: 12px 15px;
     font-size: 1.3rem;
@@ -69,7 +85,7 @@ body {
 }
 
 .nav-links li:hover {
-    background-color: black; 
+    background-color: rgb(49, 47, 47);
 }
 
 .nav-links li:hover a {
@@ -112,7 +128,7 @@ body {
     padding: 40px;
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     gap: 40px;
     width: 100%;
 }
@@ -135,7 +151,7 @@ body {
     height: 150px;
     background-color: #1a1a1a;
     border-radius: 50%;
-    border: 2px dashed #333; 
+    border: 2px dashed #333;
     background-position: center;
     background-size: cover;
 }
@@ -177,7 +193,7 @@ body {
     color: #aaa;
 }
 
-.input-group input, 
+.input-group input,
 .input-group textarea {
     background-color: #161616;
     border: 1px solid #222;
@@ -189,7 +205,7 @@ body {
     transition: all 0.3s;
 }
 
-.input-group input:focus, 
+.input-group input:focus,
 .input-group textarea:focus {
     border-color: #007bff;
     background-color: #1a1a1a;
@@ -207,7 +223,7 @@ body {
 }
 
 .save-btn {
-    background-color: #ffffff; 
+    background-color: #ffffff;
     color: #000;
     border: none;
     padding: 10px 40px;
@@ -233,7 +249,7 @@ body {
 #grid-meu-feed div:hover {
     transform: translateY(-4px);
     border-color: #444 !important;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 .btn-deletar-post:hover {

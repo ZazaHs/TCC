@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. CAPTURAR OS IDS DA URL E DA SESSÃO
     const urlParams = new URLSearchParams(window.location.search);
     const idVisitado = urlParams.get('id');
-    
+
     let idLogado = sessionStorage.getItem('idArtistaLogado') || sessionStorage.getItem('id_artista');
 
     console.log("ID do artista visitado:", idVisitado);
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Teste temporário caso não tenha feito login
     if (!idLogado) {
         console.warn("Aviso: idArtistaLogado está null no sessionStorage. Usando ID de teste temporário (2).");
-        idLogado = 2; 
+        idLogado = 2;
     }
 
     // Elementos da tela
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // CORREÇÃO: Removido o '/api' para bater com a linha 58 do seu server.js
             console.log(`Buscando perfil em: http://localhost:3000/artistas/perfil-publico/${idVisitado}/${idLogado}`);
             const response = await fetch(`http://localhost:3000/artistas/perfil-publico/${idVisitado}/${idLogado}`);
-            
+
             if (!response.ok) {
                 throw new Error(`Erro na rota do perfil: Status ${response.status}`);
             }
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // CORREÇÃO: Removido o '/api' para buscar na rota certa do artistasRoutes
             console.log(`Buscando feed em: http://localhost:3000/artistas/postagens/artista/${idVisitado}`);
             const response = await fetch(`http://localhost:3000/artistas/postagens/artista/${idVisitado}`);
-            
+
             if (!response.ok) {
                 throw new Error(`Erro na rota do feed: Status ${response.status}`);
             }
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const postElement = document.createElement('article');
                 postElement.classList.add('post-card');
                 postElement.style = "background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #333;";
-                
+
                 postElement.innerHTML = `
                     <div class="post-body">
                         <p style="color: #ddd; margin-bottom: 12px; font-size: 15px;">${post.legenda || ''}</p>

@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputArquivo = document.getElementById('post-imagem-arquivo');
     const textoNomeArquivo = document.getElementById('nome-arquivo-selecionado');
 
-    // Elementos do Modal de Criação de Post
-    const modalCriarPost = document.getElementById('modal-criar-post');
+    // Variáveis do Modal
+    const modal = document.getElementById('modal-criar-post');
     const btnAbrirModal = document.getElementById('btn-abrir-modal-post');
     const btnFecharModal = document.getElementById('btn-fechar-modal');
 
@@ -41,9 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let idArtista = urlParams.get('id');
 
     if (!idArtista || idArtista === 'undefined' || idArtista === 'null') {
-        idArtista = sessionStorage.getItem('idArtistaLogado') || 
-                    sessionStorage.getItem('id_artista') || 
-                    sessionStorage.getItem('idUsuario');
+        idArtista = sessionStorage.getItem('idArtistaLogado') ||
+            sessionStorage.getItem('id_artista') ||
+            sessionStorage.getItem('idUsuario');
     }
 
     const idLogadoReal = idArtista ? parseInt(idArtista) : 1;
@@ -99,8 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const classeCurtido = post.usuario_ja_curtiu === 1 ? 'curtido' : '';
 
                 const ehMeuPost = post.id_artista == idLogadoReal;
-                const botaoDeletarHtml = ehMeuPost 
-                    ? `<button class="btn-deletar" title="Excluir publicação" style="background: none; border: none; color: #ff3b30; font-size: 22px; cursor: pointer; padding: 0 5px;">&times;</button>` 
+                const botaoDeletarHtml = ehMeuPost
+                    ? `<button class="btn-deletar" title="Excluir publicação" style="background: none; border: none; color: #ff3b30; font-size: 22px; cursor: pointer; padding: 0 5px;">&times;</button>`
                     : '';
 
                 novoPostElemento.innerHTML = `
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             const respostaDel = await fetch(`http://localhost:3000/api/postagens/${post.id_post}`, {
                                 method: 'DELETE'
                             });
-                            
+
                             if (respostaDel.ok) {
                                 novoPostElemento.remove();
                                 if (feedContainer.children.length === 0) {
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const botaoLike = elementoPost.querySelector('.like-btn');
         const iconeCoracao = elementoPost.querySelector('.icone-coracao');
         const displayLikes = elementoPost.querySelector('.numero-likes');
-        
+
         const formComentario = elementoPost.querySelector('.comment-form');
         const inputComentario = elementoPost.querySelector('.comment-input');
         const listaComentarios = elementoPost.querySelector('.comments-list');
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const novoComentario = document.createElement('p');
                     novoComentario.classList.add('comment-item');
                     novoComentario.innerHTML = `<strong>${nomeUsuarioLogado}</strong> ${textoComentario}`;
-                    
+
                     listaComentarios.appendChild(novoComentario);
                     inputComentario.value = '';
                 } else {
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.dataset.enviando = "false";
 
-    form.onsubmit = function(event) {
+    form.onsubmit = function (event) {
         event.preventDefault();
 
         if (form.dataset.enviando === "true") return;
@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const leitor = new FileReader();
 
-        leitor.onload = async function(e) {
+        leitor.onload = async function (e) {
             if (form.dataset.requestDisparada === "true") return;
             form.dataset.requestDisparada = "true";
 
@@ -403,9 +403,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (avisoVazio && (avisoVazio.textContent.includes("Nenhuma publicação") || avisoVazio.textContent.includes("O feed está vazio"))) {
                     feedContainer.innerHTML = '';
                 }
-                
+
                 feedContainer.prepend(novoPostElemento);
-                
+
+                // === A MÁGICA ACONTECE AQUI: Resetando o form e fechando o modal ===
                 form.reset();
                 textoNomeArquivo.textContent = "Nenhum arquivo selecionado";
 

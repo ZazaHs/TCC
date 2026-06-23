@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (resposta.ok) {
                 // Extrai com segurança o ID do artista independente de vir como id_artista ou id
-                const idArtista = resultado.user.id_artista || resultado.user.id; 
+                const idArtista = resultado.user.id_artista || resultado.user.id;
 
                 // 1. SALVA NA SESSÃO: Alimenta todas as variáveis usadas pelas outras páginas do site
                 sessionStorage.setItem('idArtistaLogado', idArtista);
@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 2. Salva os dados completos no LocalStorage como você já fazia
                 localStorage.setItem('usuarioLogado', JSON.stringify(resultado.user));
-                
+
                 console.log("Sessão iniciada com sucesso para o ID:", idArtista);
 
                 // 3. REDIRECIONAMENTO: Envia para a home passando o ID na URL
-                window.location.href = `/views/pages/home.html?id=${idArtista}`; 
+                window.location.href = `/views/pages/home.html?id=${idArtista}`;
 
             } else {
                 if (erroContainer) {

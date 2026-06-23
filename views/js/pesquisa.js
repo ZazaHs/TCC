@@ -2,11 +2,11 @@
 const bancoDeArtes = [
     { id_post: 1, imagem_post: '/views/media/Art/Mark-Variants.avif', tipo: 'normal', id_artista: 1 },
     { id_post: 2, imagem_post: '/views/media/Art/Cyberpunk.jpg', tipo: 'normal', id_artista: 2 },
-    { id_post: 3, imagem_post: '/views/media/Art/Bleach.jpg', tipo: 'tall', id_artista: 3 }, 
+    { id_post: 3, imagem_post: '/views/media/Art/Bleach.jpg', tipo: 'tall', id_artista: 3 },
     { id_post: 4, imagem_post: '/views/media/Art/Itachi.png', tipo: 'normal', id_artista: 4 },
     { id_post: 5, imagem_post: '/views/media/Art/One-piece.jpeg', tipo: 'normal', id_artista: 5 },
     { id_post: 6, imagem_post: '/views/media//Art/Death-note.png', tipo: 'normal', id_artista: 6 },
-    { id_post: 7, imagem_post: '/views/media/Art/Samurai-cyberpunk.png', tipo: 'tall', id_artista: 7 }, 
+    { id_post: 7, imagem_post: '/views/media/Art/Samurai-cyberpunk.png', tipo: 'tall', id_artista: 7 },
     { id_post: 8, imagem_post: '/views/media/Art/Reze.jpg', tipo: 'normal', id_artista: 8 },
     { id_post: 9, imagem_post: '/views/media/Art/Naruto.jpg', tipo: 'normal', id_artista: 9 },
     { id_post: 10, imagem_post: '/views/media/Art/One-piece-Ace.jpg', tipo: 'normal', id_artista: 10 },
@@ -25,15 +25,15 @@ async function renderizarGridExplorar() {
 
     // Recupera o ID do artista logado para o algoritmo filtrar e não mostrar seus próprios posts
     const urlParams = new URLSearchParams(window.location.search);
-    let idLogado = urlParams.get('id') || sessionStorage.getItem('idArtistaLogado') || 
-                   sessionStorage.getItem('id_artista') || sessionStorage.getItem('idUsuario') || 1;
+    let idLogado = urlParams.get('id') || sessionStorage.getItem('idArtistaLogado') ||
+        sessionStorage.getItem('id_artista') || sessionStorage.getItem('idUsuario') || 1;
 
     try {
         console.log(`📡 Solicitando feed explorar para o ID Logado: ${idLogado}`);
         const resposta = await fetch(`http://localhost:3000/api/postagens/explorar/${idLogado}`);
-        
+
         if (!resposta.ok) throw new Error("Resposta inválida do servidor.");
-        
+
         const postagensDoBanco = await resposta.json();
         console.log("🚀 Postagens recebidas pelo algoritmo (Novos artistas no topo):", postagensDoBanco);
 
@@ -47,7 +47,7 @@ async function renderizarGridExplorar() {
 
     } catch (error) {
         console.warn("⚠️ Back-end offline ou sem registros. Renderizando banco local de contingência...", error);
-        
+
         // Ativa o plano B: Carrega as suas imagens estáticas se o banco falhar
         gridContainer.innerHTML = '';
         montarCardsNoGrid(bancoDeArtes, gridContainer);
@@ -59,7 +59,7 @@ function montarCardsNoGrid(listaDeArtes, container) {
     listaDeArtes.forEach(arte => {
         const gridItem = document.createElement('div');
         gridItem.classList.add('grid-item');
-        
+
         // Garante a captura correta do ID seja do banco local ou do MySQL real
         const idPostagem = arte.id_post || arte.id;
 
@@ -112,7 +112,7 @@ async function realizarPesquisa(termo) {
 
 // FUNÇÃO DE RENDERIZAÇÃO DE RESULTADOS VINDOS DA PESQUISA
 function renderizarResultadosPesquisa(dados, container) {
-    container.innerHTML = ''; 
+    container.innerHTML = '';
 
     const { artistas, obras, tags } = dados;
 
@@ -128,7 +128,7 @@ function renderizarResultadosPesquisa(dados, container) {
     if (artistas && artistas.length > 0) {
         const divArtistas = document.createElement('div');
         divArtistas.innerHTML = `<h3 style="color: #fff; margin-bottom: 15px; font-size: 20px; border-bottom: 1px solid #333; padding-bottom: 5px;">Artistas</h3>`;
-        
+
         const subGrid = document.createElement('div');
         subGrid.style = "display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;";
 
@@ -140,7 +140,7 @@ function renderizarResultadosPesquisa(dados, container) {
                 <h4 style="color: #fff; font-size: 16px; margin: 5px 0;">${artista.nome}</h4>
                 <p style="color: #aaa; font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${artista.biografia || ''}</p>
             `;
-            
+
             item.addEventListener('click', () => {
                 window.location.href = `/views/pages/perfil-publico.html?id=${artista.id_artista}`;
             });
@@ -156,7 +156,7 @@ function renderizarResultadosPesquisa(dados, container) {
         divObras.innerHTML = `<h3 style="color: #fff; margin-bottom: 15px; font-size: 20px; border-bottom: 1px solid #333; padding-bottom: 5px;">Obras</h3>`;
 
         const subGridObras = document.createElement('div');
-        subGridObras.className = "explore-grid"; 
+        subGridObras.className = "explore-grid";
         subGridObras.style = "display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; grid-auto-rows: dense;";
 
         obras.forEach(obra => {
@@ -185,7 +185,7 @@ function renderizarResultadosPesquisa(dados, container) {
     if (tags && tags.length > 0) {
         const divTags = document.createElement('div');
         divTags.innerHTML = `<h3 style="color: #fff; margin-bottom: 15px; font-size: 20px; border-bottom: 1px solid #333; padding-bottom: 5px;">Tags e Estilos</h3>`;
-        
+
         const tagBox = document.createElement('div');
         tagBox.style = "display: flex; flex-wrap: wrap; gap: 10px;";
 
@@ -193,7 +193,7 @@ function renderizarResultadosPesquisa(dados, container) {
             const badge = document.createElement('span');
             badge.style = "background: #222; color: #007bff; padding: 8px 16px; border-radius: 20px; font-weight: 500; cursor: pointer; border: 1px solid #333; transition: 0.2s;";
             badge.textContent = `#${tag.nome_categoria}`;
-            
+
             badge.addEventListener('click', () => {
                 const searchInput = document.getElementById('search-input');
                 if (searchInput) {
@@ -216,7 +216,7 @@ function renderizarResultadosPesquisa(dados, container) {
 function abrirFotoEmTelaCheia(urlDaImagem, idArtista) {
     const modal = document.getElementById('image-modal');
     const modalImg = document.getElementById('modal-img');
-    
+
     if (modal && modalImg) {
         modalImg.src = urlDaImagem;
         modal.style.display = 'flex';
@@ -228,7 +228,7 @@ function abrirFotoEmTelaCheia(urlDaImagem, idArtista) {
             const btnPerfil = document.createElement('button');
             btnPerfil.className = 'btn-visitar-perfil';
             btnPerfil.textContent = 'Ver Perfil do Artista';
-            
+
             btnPerfil.style = `
                 position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
                 background: rgba(0, 123, 255, 0.85); color: #fff; border: none;
@@ -241,7 +241,7 @@ function abrirFotoEmTelaCheia(urlDaImagem, idArtista) {
             btnPerfil.addEventListener('mouseleave', () => btnPerfil.style.background = 'rgba(0, 123, 255, 0.85)');
 
             btnPerfil.addEventListener('click', (e) => {
-                e.stopPropagation(); 
+                e.stopPropagation();
                 window.location.href = `/views/pages/perfil-publico.html?id=${idArtista}`;
             });
 
@@ -280,7 +280,7 @@ window.addEventListener('DOMContentLoaded', () => {
         searchInput.addEventListener('input', (e) => {
             clearTimeout(timeoutBusca);
             const termo = e.target.value;
-            
+
             timeoutBusca = setTimeout(() => {
                 realizarPesquisa(termo);
             }, 400);

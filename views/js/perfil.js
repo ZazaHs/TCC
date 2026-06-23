@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     let idArtista = urlParams.get('id');
 
     if (!idArtista || idArtista === 'undefined' || idArtista === 'null') {
-        idArtista = sessionStorage.getItem('idArtistaLogado') || 
-                    sessionStorage.getItem('id_artista') || 
-                    sessionStorage.getItem('idUsuario');
+        idArtista = sessionStorage.getItem('idArtistaLogado') ||
+            sessionStorage.getItem('id_artista') ||
+            sessionStorage.getItem('idUsuario');
     }
 
     console.log("🔍 ID detectado para carregar o perfil:", idArtista);
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const inputFoto = document.getElementById('imageUpload');
     const previewFoto = document.getElementById('imagePreview');
     const formEditar = document.getElementById('formEditarPerfil');
-    
+
     const txtSeguidores = document.getElementById('qtd-seguidores');
     const txtSeguindo = document.getElementById('qtd-seguindo');
     const gridMeuFeed = document.getElementById('grid-meu-feed');
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function carregarDadosPerfil() {
         try {
             console.log("📡 Solicitando dados para o ID:", idArtista);
-            
+
             let resposta = await fetch(`http://localhost:3000/auth/perfil/${idArtista}`);
             let textoBruto = await resposta.text();
 
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 // Mesmo na contingência, vamos forçar a chamada dos seguidores para não zerar
                 await carregarContadoresSeguidores();
-                return; 
+                return;
             }
 
             let dadosArtista = JSON.parse(textoBruto);
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         previewFoto.style.backgroundImage = `url(${fotoBase64})`;
                     }
                 }
-                
+
                 // Tenta mapear os dados caso o endpoint já traga
                 if (txtSeguidores) txtSeguidores.textContent = dadosArtista.totalSeguidores || dadosArtista.seguidores || "0";
                 if (txtSeguindo) txtSeguindo.textContent = dadosArtista.totalSeguindo || dadosArtista.seguindo || "0";
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             gridMeuFeed.innerHTML = '<p style="color: #888; grid-column: 1/-1;">Carregando publicações...</p>';
 
             let urlFinal = `http://localhost:3000/api/postagens/artista/${idArtista}`;
-            
+
             console.log(`📡 Buscando publicações in: ${urlFinal}`);
             let resposta = await fetch(urlFinal);
             let textoBruto = await resposta.text();
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (textoBruto.trim().startsWith("<!DOCTYPE html>") || !resposta.ok) {
                 throw new Error("Nenhum endpoint de postagens retornou dados válidos em JSON.");
             }
-            
+
             const posts = JSON.parse(textoBruto);
             console.log("🖼️ Postagens retornadas pelo MySQL:", posts);
 
@@ -163,10 +163,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             posts.forEach(post => {
                 const card = document.createElement('div');
                 card.style = "background: #1a1a1a; padding: 12px; border-radius: 10px; border: 1px solid #2c2c2c; cursor: pointer; transition: 0.2s; position: relative;";
-                
+
                 const urlImagem = post.imagem_post || post.imagem || post.midia || 'https://placehold.co/600x400/222/fff?text=Sem+Imagem';
                 const textoLegenda = post.legenda || post.descricao || 'Sem legenda';
-                
+
                 const idPostagem = post.id_post || post.id || post.id_postagem;
 
                 card.innerHTML = `
@@ -181,19 +181,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const btnDeletar = card.querySelector('.btn-deletar-post');
                 btnDeletar.addEventListener('click', async (e) => {
-                    e.stopPropagation(); 
+                    e.stopPropagation();
 
                     const certeza = confirm("Tem certeza absoluta de que deseja apagar esta publicação artística? Esta ação não poderá ser desfeita.");
-                    
+
                     if (certeza) {
                         const tentativasDelete = [
                             { url: `http://localhost:3000/api/postagens/${idPostagem}`, options: { method: 'DELETE' } },
                             { url: `http://localhost:3000/api/postagens/deletar/${idPostagem}`, options: { method: 'DELETE' } },
-                            { url: `http://localhost:3000/api/postagens`, options: { 
-                                method: 'DELETE', 
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ id_post: idPostagem, id: idPostagem }) 
-                            }}
+                            {
+                                url: `http://localhost:3000/api/postagens`, options: {
+                                    method: 'DELETE',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id_post: idPostagem, id: idPostagem })
+                                }
+                            }
                         ];
 
                         let deletadoComSucesso = false;
@@ -202,7 +204,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             try {
                                 console.log(`🗑️ Enviando ID ${idPostagem} para: ${tentativa.url}`);
                                 const respostaDelete = await fetch(tentativa.url, tentativa.options);
-                                
+
                                 if (respostaDelete.ok) {
                                     const textoResp = await respostaDelete.text();
                                     if (!textoResp.trim().startsWith("<!DOCTYPE html>")) {
@@ -217,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                         if (deletadoComSucesso) {
                             alert("Publicação removida com sucesso!");
-                            card.remove(); 
+                            card.remove();
                         } else {
                             alert("Não foi possível apagar a postagem. Verifique se o backend está usando a coluna 'id_post' no DELETE.");
                         }
@@ -255,11 +257,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (inputFoto) {
-        inputFoto.addEventListener('change', function() {
+        inputFoto.addEventListener('change', function () {
             const arquivo = this.files[0];
             if (arquivo) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     fotoBase64 = e.target.result;
                     if (previewFoto) {
                         previewFoto.style.backgroundImage = `url(${fotoBase64})`;
@@ -290,7 +292,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 if (resposta.ok) {
                     alert('Perfil updated com sucesso!');
-                    await carregarDadosPerfil(); 
+                    await carregarDadosPerfil();
                 } else {
                     const dadosErro = await resposta.json();
                     alert('Erro ao salvar: ' + (dadosErro.error || 'Verifique as informações.'));
