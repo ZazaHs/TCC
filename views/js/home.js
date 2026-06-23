@@ -1,41 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // =======================================================
-    // 1. VARIÁVEIS GLOBAIS E ELEMENTOS DA TELA
-    // =======================================================
     const form = document.getElementById('form-novo-post');
     const feedContainer = document.getElementById('feed-posts');
     const inputArquivo = document.getElementById('post-imagem-arquivo');
     const textoNomeArquivo = document.getElementById('nome-arquivo-selecionado');
-    
-    // Variáveis do Modal
-    const modal = document.getElementById('modal-criar-post');
+
+    // Elementos do Modal de Criação de Post
+    const modalCriarPost = document.getElementById('modal-criar-post');
     const btnAbrirModal = document.getElementById('btn-abrir-modal-post');
     const btnFecharModal = document.getElementById('btn-fechar-modal');
 
     // =======================================================
-    // 2. LÓGICA DO MODAL (JANELA FLUTUANTE)
+    // CONTROLE DE ABERTURA E FECHAMENTO DO MODAL
     // =======================================================
-    if (btnAbrirModal && modal) {
+    if (btnAbrirModal && modalCriarPost) {
         btnAbrirModal.addEventListener('click', (e) => {
             e.preventDefault();
-            modal.style.display = 'flex';
+            modalCriarPost.style.display = 'flex'; // Abre o modal centralizado
         });
     }
 
-    if (btnFecharModal && modal) {
+    if (btnFecharModal && modalCriarPost) {
         btnFecharModal.addEventListener('click', () => {
-            modal.style.display = 'none';
+            modalCriarPost.style.display = 'none'; // Fecha no botão X
         });
     }
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
+    // Fecha o modal se o usuário clicar na parte escura de fora dele
+    if (modalCriarPost) {
+        modalCriarPost.addEventListener('click', (e) => {
+            if (e.target === modalCriarPost) {
+                modalCriarPost.style.display = 'none';
+            }
+        });
+    }
 
     // =======================================================
-    // 3. GERENCIAMENTO DE SESSÃO DO ARTISTA
+    // GERENCIAMENTO DE SESSÃO
     // =======================================================
     const urlParams = new URLSearchParams(window.location.search);
     let idArtista = urlParams.get('id');
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =======================================================
-    // 4. CARREGAMENTO DINÂMICO DO FEED DO BANCO DE DADOS
+    // CARREGAMENTO DINÂMICO DO FEED HÍBRIDO
     // =======================================================
     async function carregarFeedBanco() {
         if (!feedContainer) return;
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 alert("Erro ao deletar postagem no servidor.");
                             }
                         } catch (err) {
-                            console.error("Erro ao deletar post do feed carregado:", err);
+                            console.error("Erro ao deletar post:", err);
                         }
                     });
                 }
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =======================================================
-    // 5. LÓGICA DE INTERAÇÕES (LIKE E COMENTÁRIOS NO BANCO)
+    // LÓGICA ASSÍNCRONA DE INTERAÇÕES
     // =======================================================
     async function configurarInteracoesDoCard(elementoPost, idPost) {
         const botaoLike = elementoPost.querySelector('.like-btn');
@@ -211,8 +211,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // --- LÓGICA DE CURTIR (BLINDADA CONTRA NEGATIVOS) ---
         botaoLike.addEventListener('click', async () => {
             if (!idPost) return alert("Salve o post primeiro para poder curtir!");
+
+            // Previne spam de cliques repetidos
+            if (botaoLike.dataset.processando === "true") return;
+            botaoLike.dataset.processando = "true";
 
             try {
                 const resposta = await fetch('http://localhost:3000/api/postagens/curtir', {
@@ -223,21 +228,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (resposta.ok) {
                     const resultado = await resposta.json();
-                    let atualLikes = parseInt(displayLikes.textContent);
+                    let atualLikes = parseInt(displayLikes.textContent) || 0;
 
+                    // ✅ CORREÇÃO: O número se baseia exatamente no retorno lógico do servidor
                     if (resultado.curtido) {
                         atualLikes++;
                         iconeCoracao.textContent = '❤️';
                         botaoLike.classList.add('curtido');
                     } else {
-                        atualLikes--;
+                        // ✅ TRAVA CONTRA NEGATIVOS: Garante que o contador nunca desça de 0
+                        atualLikes = Math.max(0, atualLikes - 1);
                         iconeCoracao.textContent = '🤍';
                         botaoLike.classList.remove('curtido');
                     }
                     displayLikes.textContent = atualLikes;
+                } else {
+                    console.error("Erro na resposta de curtida:", resposta.status);
                 }
             } catch (err) {
-                console.error("Erro ao processar curtida no servidor:", err);
+                console.error("Erro ao processar curtida:", err);
+            } finally {
+                // Libera o botão para o próximo clique
+                botaoLike.dataset.processando = "false";
             }
         });
 
@@ -276,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarFeedBanco();
 
     // =======================================================
-    // 6. ENVIO DE NOVAS POSTAGENS PARA O BANCO E FEED
+    // ENVIO DE NOVAS POSTAGENS
     // =======================================================
     if (!form || !feedContainer) return;
 
@@ -297,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const legendaTexto = document.getElementById('post-legenda').value;
         const arquivo = inputArquivo.files[0];
-        const botaoSubmeter = form.querySelector('button[type="submit"]') || form.querySelector('.btn-comment-post');
+        const botaoSubmeter = form.querySelector('button[type="submit"]');
 
         if (!arquivo) {
             alert("Por favor, selecione uma imagem!");
@@ -309,7 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
             botaoSubmeter.disabled = true;
             botaoSubmeter.textContent = "Publicando...";
             botaoSubmeter.style.opacity = "0.5";
-            botaoSubmeter.style.cursor = "not-allowed";
         }
 
         const leitor = new FileReader();
@@ -395,11 +406,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 feedContainer.prepend(novoPostElemento);
                 
-                // === A MÁGICA ACONTECE AQUI: Resetando o form e fechando o modal ===
                 form.reset();
                 textoNomeArquivo.textContent = "Nenhum arquivo selecionado";
-                if (modal) {
-                    modal.style.display = 'none';
+
+                if (modalCriarPost) {
+                    modalCriarPost.style.display = 'none';
                 }
 
             } catch (error) {
@@ -412,7 +423,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     botaoSubmeter.disabled = false;
                     botaoSubmeter.textContent = "Publicar";
                     botaoSubmeter.style.opacity = "1";
-                    botaoSubmeter.style.cursor = "pointer";
                 }
             }
         };
