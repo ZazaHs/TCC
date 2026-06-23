@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputArquivo = document.getElementById('post-imagem-arquivo');
     const textoNomeArquivo = document.getElementById('nome-arquivo-selecionado');
 
-    // Variáveis do Modal
-    const modal = document.getElementById('modal-criar-post');
+    // Variáveis do Modal (CORRIGIDO: Alterado de 'modal' para 'modalCriarPost')
+    const modalCriarPost = document.getElementById('modal-criar-post');
     const btnAbrirModal = document.getElementById('btn-abrir-modal-post');
     const btnFecharModal = document.getElementById('btn-fechar-modal');
 
@@ -230,13 +230,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const resultado = await resposta.json();
                     let atualLikes = parseInt(displayLikes.textContent) || 0;
 
-                    // ✅ CORREÇÃO: O número se baseia exatamente no retorno lógico do servidor
                     if (resultado.curtido) {
                         atualLikes++;
                         iconeCoracao.textContent = '❤️';
                         botaoLike.classList.add('curtido');
                     } else {
-                        // ✅ TRAVA CONTRA NEGATIVOS: Garante que o contador nunca desça de 0
                         atualLikes = Math.max(0, atualLikes - 1);
                         iconeCoracao.textContent = '🤍';
                         botaoLike.classList.remove('curtido');
@@ -406,7 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 feedContainer.prepend(novoPostElemento);
 
-                // === A MÁGICA ACONTECE AQUI: Resetando o form e fechando o modal ===
                 form.reset();
                 textoNomeArquivo.textContent = "Nenhum arquivo selecionado";
 
