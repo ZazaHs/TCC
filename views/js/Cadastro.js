@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (resposta.ok) {
                     alert('Artista cadastrado com sucesso!');
                     // Após o sucesso, redireciona o usuário para a tela de login
-                    window.location.href = '/views/pages/Login/login.html'; // Ajuste o caminho da sua tela de login aqui se necessário
+                    window.location.href = '/index.html'; // Ajuste o caminho da sua tela de login aqui se necessário
                 } else {
                     alert(resultado.error || 'Erro ao realizar o cadastro.');
                 }
